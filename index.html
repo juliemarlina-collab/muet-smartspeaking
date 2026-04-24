@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>MUET SmartSpeaking · POLIPD 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Sora:wght@700;800;900&display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET & ROOT ─────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Core palette */
+  --P:#3E68FF;--PL:#eef2ff;--PD:#2A2D97;
+  --T:#46C6AB;
+  --G:#49D2B6;--GL:#e6faf6;--GD:#29BFA5;
+  --A:#F4D53F;--AL:#fffde8;--AD:#d4b820;
+  --R:#FF6B5E;--RL:#fff0ef;
+  --V:#6A42FF;
+  --bg:#f6f4ff;--card:#FFFFFF;
+  --ink:#0a0f1e;--ink2:#1e2d4a;--muted:#5a6a7e;--border:#e2deff;
+  --r:12px;--rl:16px;--rxl:22px;
+  --sh:0 2px 10px rgba(0,0,0,.07);
+  --sh2:0 6px 24px rgba(0,0,0,.11);
+  /* Colour sequence */
+  --taskA1:#3E68FF;--taskA2:#6A42FF;
+  --taskB1:#49D2B6;--taskB2:#29BFA5;
+  --yellow:#F4D53F;--yellow2:#FFE96A;
+  --orange1:#FF9462;--orange2:#FF765E;
+  --softInput:#f7f5ff;--placeholder:#7b8190;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:"Plus Jakarta Sans",sans-serif;background:radial-gradient(circle at 8% 8%,rgba(108,59,255,.10),transparent 28%),radial-gradient(circle at 95% 15%,rgba(244,213,63,.18),transparent 24%),#f6f4ff;color:var(--ink);max-width:480px;margin:0 auto;position:relative;overflow:hidden;-webkit-overflow-scrolling:touch}
+
+/* ── SCREEN SYSTEM ───────────────────────────────────────────── */
+.screen{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:88px;background:var(--bg);transform:translateX(105%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:1}
+.screen.active{transform:none;z-index:2}
+#sc-splash{background:linear-gradient(135deg,#2F6BFF 0%,#6C3BFF 65%,#8A63FF 100%);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:44px 22px 28px;z-index:99;overflow-y:auto}
+#sc-splash.active{transform:none}
+
+/* ── ANIMATIONS ─────────────────────────────────────────────── */
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes rpulse{0%,100%{box-shadow:0 0 0 8px rgba(239,68,68,.18),0 0 0 16px rgba(239,68,68,.07)}50%{box-shadow:0 0 0 13px rgba(239,68,68,.13),0 0 0 24px rgba(239,68,68,.04)}}
+
+/* ── SPLASH / REGISTRATION ───────────────────────────────────── */
+.spl-logo{width:88px;height:88px;border-radius:26px;background:#F4D53F;border:none;box-shadow:0 8px 28px rgba(244,213,63,.4);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:18px;animation:pop .55s cubic-bezier(.34,1.56,.64,1) both}
+.spl-title{font-size:30px;font-weight:900;color:#fff;text-align:center;line-height:1.1;animation:fu .5s .1s both;font-family:'Sora',sans-serif;letter-spacing:-.03em}
+.spl-sub{font-size:13px;color:#ffffff;font-weight:700;margin-top:6px;animation:fu .5s .2s both;text-align:center;letter-spacing:.01em}
+.spl-badge{display:inline-flex;align-items:center;gap:5px;background:#F4D53F;border:none;border-radius:99px;padding:6px 16px;font-size:11px;font-weight:800;color:#171133;margin-top:13px;animation:fu .5s .3s both;box-shadow:0 3px 10px rgba(244,213,63,.45)}
+.spl-card{background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.30);border-radius:var(--rxl);padding:26px 20px;width:100%;margin-top:22px;animation:fu .5s .36s both;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.f-lbl{font-size:11px;font-weight:800;color:#ffffff;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;display:block}
+.f-in{width:100%;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.22);border-radius:var(--r);padding:11px 13px;color:#fff;font-family:inherit;font-size:14px;font-weight:600;outline:none;margin-bottom:11px;transition:border-color .18s}
+.f-in::placeholder{color:rgba(255,255,255,.35)}
+.f-in:focus{border-color:rgba(255,255,255,.7);box-shadow:0 0 0 3px rgba(249,115,22,.2)}
+.f-sel{width:100%;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.22);border-radius:var(--r);padding:11px 13px;color:#fff;font-family:inherit;font-size:14px;font-weight:600;outline:none;margin-bottom:11px;appearance:none;cursor:pointer}
+.f-sel option{background:var(--PD);color:#fff}
+.btn-spl{width:100%;padding:17px;background:#F4D53F;border:none;border-radius:var(--r);font-family:'Sora',sans-serif;font-size:16px;font-weight:900;color:#171133;cursor:pointer;margin-top:10px;letter-spacing:.04em;box-shadow:0 6px 20px rgba(244,213,63,.5);transition:transform .18s}
+.btn-spl:active{transform:scale(.97)}
+
+/* ── BOTTOM NAV ─────────────────────────────────────────────── */
+#bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#ffffff;border-top:2px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);z-index:200;padding-bottom:env(safe-area-inset-bottom,0);box-shadow:0 -4px 24px rgba(26,58,92,.07)}
+.bn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px 5px;cursor:pointer;border:none;background:none;font-family:inherit;font-size:9px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;-webkit-tap-highlight-color:transparent;position:relative;transition:color .18s}
+.bn .bni{font-size:21px;line-height:1;transition:transform .2s}
+.bn.act{color:var(--P)}
+.bn.act .bni{transform:scale(1.1)}
+.bn.act::after{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:32px;height:3px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,#2F6BFF,#6C3BFF);box-shadow:none}
+
+/* ── LAYOUT UTILITIES ───────────────────────────────────────── */
+.pad{padding:16px 16px 0}
+.pg-title{font-size:23px;font-weight:900;color:var(--ink);margin-bottom:3px;font-family:'Sora',sans-serif;letter-spacing:-.02em}
+.pg-sub{font-size:13px;font-weight:600;color:var(--muted)}
+.body-pad{padding:12px 16px 0}
+
+/* ── CARD ───────────────────────────────────────────────────── */
+.card{background:var(--card);border-radius:var(--rl);box-shadow:var(--sh);padding:16px;margin-bottom:11px;border:1px solid rgba(212,226,240,.6)}
+.card-xs{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:13px;margin-bottom:9px}
+
+/* ── HERO CARD ──────────────────────────────────────────────── */
+.hero{border-radius:var(--rxl);padding:20px 18px;color:#fff;margin-bottom:13px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;right:-16px;top:-16px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none}
+.hero.blue{background:linear-gradient(135deg,#2F6BFF,#6C3BFF)}
+.hero.green{background:linear-gradient(135deg,#46C6AB,#24B69B)}
+.hero.amber{background:#F4D53F}
+.hc-tag{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;opacity:.62;margin-bottom:5px}
+.hc-title{font-size:19px;font-weight:900;line-height:1.2;margin-bottom:3px}
+.hc-sub{font-size:12px;font-weight:600;opacity:.7}
+.hc-pill{display:inline-block;background:rgba(255,255,255,.16);border-radius:99px;padding:4px 11px;font-size:11px;font-weight:700;margin-top:9px}
+
+/* ── SECTION HEADING ────────────────────────────────────────── */
+.sh{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.sh::after{content:"";flex:1;height:1px;background:var(--border)}
+
+/* ── TABS ───────────────────────────────────────────────────── */
+.tabs{display:flex;background:#eee9ff;border-radius:var(--rl);padding:5px;gap:3px;margin-bottom:13px;border:2px solid #d8d0ff}
+.tab{flex:1;padding:9px 4px;border-radius:10px;text-align:center;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;font-family:inherit;color:var(--P);transition:all .18s;line-height:1.2}
+.tab.act{background:linear-gradient(135deg,#2F6BFF,#6C3BFF);box-shadow:none;color:#fff}
+
+/* ── BUTTONS ────────────────────────────────────────────────── */
+.btn{width:100%;padding:15px;border:none;border-radius:var(--r);font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:transform .18s;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn:active{transform:scale(.97)}
+.btn-p{background:linear-gradient(135deg,#2F6BFF,#6C3BFF);color:#fff;box-shadow:none;border-radius:var(--r)}
+.btn-g{background:linear-gradient(135deg,#46C6AB,#24B69B);color:#fff;box-shadow:none}
+.btn-a{background:#F4D53F;color:#171133;box-shadow:none}
+.btn-ghost{background:#eef2ff;color:#2F6BFF;border:2px solid #2F6BFF}
+.btn-out{background:#1e2d4a;border:2px solid #1e2d4a;color:#ffffff;font-weight:800}
+.btn-row{display:flex;gap:8px;margin-top:11px}
+.btn-row>.btn{margin-top:0}
+
+/* ── STEP TRACKER ───────────────────────────────────────────── */
+.steps{display:flex;align-items:flex-start;margin-bottom:16px}
+.su{display:flex;flex-direction:column;align-items:center;flex:1}
+.sc{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;background:var(--border);color:var(--muted);transition:all .25s;z-index:1}
+.sc.act{background:linear-gradient(135deg,#2F6BFF,#6C3BFF);color:#fff;box-shadow:0 0 0 4px var(--PL)}
+.sc.done{background:var(--G);color:#fff}
+.sl{font-size:9px;font-weight:800;text-align:center;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
+.sl.act{color:var(--P)}
+.sln{flex:1;height:2px;background:var(--border);margin-top:14px;transition:background .3s}
+.sln.done{background:var(--G)}
+
+/* ── TOPIC PICKER ───────────────────────────────────────────── */
+.tpills{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+.tpills::-webkit-scrollbar{display:none}
+.tpill{flex-shrink:0;padding:6px 14px;border-radius:99px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--muted);font-family:inherit;transition:all .15s;white-space:nowrap}
+.tpill.act{background:linear-gradient(135deg,#2F6BFF,#6C3BFF);color:#fff;border-color:#2F6BFF}
+.topic-item{background:var(--card);border-radius:var(--rl);padding:13px 15px;margin-bottom:7px;cursor:pointer;border:2px solid transparent;transition:all .18s;box-shadow:var(--sh);display:flex;align-items:center;gap:10px}
+.topic-item.sel{border-color:#2F6BFF;background:linear-gradient(135deg,#2F6BFF,#6C3BFF);color:#fff}.topic-item.sel .ti-title{color:#fff}.topic-item.sel .ti-theme{color:rgba(255,255,255,.65)}
+.ti-num{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;flex-shrink:0}
+.ti-theme{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.ti-title{font-size:13px;font-weight:700;color:var(--ink);line-height:1.3}
+
+/* ── CANDIDATE ROLE GRID ────────────────────────────────────── */
+.cand-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:13px}
+.cand-btn{padding:14px;border-radius:var(--r);cursor:pointer;border:2px solid var(--border);background:var(--card);font-family:inherit;transition:all .18s;text-align:left;box-shadow:var(--sh)}
+.cand-btn.sel{border-color:#2F6BFF;background:linear-gradient(135deg,#2F6BFF,#6C3BFF);color:#fff;box-shadow:0 4px 16px rgba(47,107,255,.3)}
+.cb-ltr{width:28px;height:28px;border-radius:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;margin-bottom:6px}
+.cb-txt{font-size:13px;font-weight:700;color:var(--ink);line-height:1.5}
+
+/* ── PREP 2×2 GRID (visible during speaking) ────────────────── */
+.prep-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px}
+.prep-cell{border-radius:var(--r);padding:9px 10px}
+.prep-cell-p{background:linear-gradient(135deg,#2F6BFF,#6C3BFF);border-left:none;border-radius:var(--r)}
+.prep-cell-r{background:linear-gradient(135deg,#46C6AB,#24B69B);border-left:none;border-radius:var(--r)}
+.prep-cell-e{background:#F4D53F;border-left:none;border-radius:var(--r)}
+.prep-cell-c{background:linear-gradient(135deg,#FF8E53,#FF6B5E);border-left:none;border-radius:var(--r)}
+.prep-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;color:rgba(255,255,255,.7)}
+.prep-hint{font-size:11px;font-weight:700;color:#fff;line-height:1.4}
+
+/* ── TIMER ──────────────────────────────────────────────────── */
+.timer-wrap{background:linear-gradient(135deg,#2A2D97,#6C3BFF);border-radius:var(--rxl);padding:24px 18px;text-align:center;margin-bottom:13px;box-shadow:0 8px 28px rgba(42,45,151,.35)}
+.t-phase{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.9);margin-bottom:8px}
+.t-ring{width:130px;height:130px;margin:0 auto 10px;position:relative}
+.t-ring svg{transform:rotate(-90deg)}
+.tr-bg{fill:none;stroke:rgba(255,255,255,.12);stroke-width:10}
+.tr-fg{fill:none;stroke:#F4D53F;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .5s linear,stroke .4s}
+.t-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:36px;font-weight:900;color:#fff;letter-spacing:-.02em;font-family:'Sora',sans-serif}
+.t-sub{font-size:12px;color:rgba(255,255,255,.8);font-weight:600;margin-bottom:13px}
+.t-btns{display:flex;gap:7px}
+.tbtn{flex:1;padding:13px 8px;border-radius:var(--r);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;border:none;transition:transform .15s}
+.tbtn:active{transform:scale(.96)}
+.tbtn-go{background:#F4D53F;color:#171133;font-weight:900}
+.tbtn-skip{background:#FF8E53;color:#fff;font-weight:800}
+.tbtn-rst{background:rgba(255,255,255,.18);color:#fff;font-weight:800;border:1.5px solid rgba(255,255,255,.3)}
+
+/* ── RECORDING ──────────────────────────────────────────────── */
+.rec-wrap{text-align:center;padding:14px 0}
+.rec-btn{width:80px;height:80px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;transition:all .2s;margin:0 auto;background:#FF6B5E;box-shadow:0 6px 20px rgba(255,107,94,.4)}
+.rec-btn.rec{animation:rpulse 1.2s infinite}
+.rec-status{font-size:13px;font-weight:800;color:var(--ink2);margin-top:9px;line-height:1.4}
+.wc-row{display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px}
+.wc-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.wc-num{font-size:12px;font-weight:800;color:var(--muted)}
+textarea.ta{width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:11px;font-family:inherit;font-size:13px;font-weight:500;color:var(--ink);background:var(--bg);outline:none;resize:vertical;line-height:1.7;min-height:88px}
+textarea.ta:focus{border-color:#46C6AB;box-shadow:0 0 0 3px rgba(70,198,171,.18)}
+
+/* ── EXAMINER CARD ──────────────────────────────────────────── */
+.examiner-card{background:var(--PL);border:2px solid rgba(11,79,108,.25);border-radius:var(--r);padding:12px 14px;margin-bottom:12px}
+.examiner-card.green{background:#e6faf6;border-color:rgba(70,198,171,.3)}
+.ex-label{font-size:10px;font-weight:800;color:var(--P);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.examiner-card.green .ex-label{color:var(--GD)}
+.ex-text{font-size:13px;font-weight:600;color:var(--ink2);line-height:1.65;font-style:italic}
+
+/* ── BEHAVIORAL CHECKLIST ───────────────────────────────────── */
+.cl-wrap{margin-bottom:12px}
+.cl-item{display:flex;gap:11px;align-items:flex-start;padding:11px 14px;background:var(--card);border-radius:var(--r);margin-bottom:6px;box-shadow:var(--sh);cursor:pointer;border:2px solid transparent;transition:border-color .15s}
+.cl-item.checked{border-color:#46C6AB;background:#e6faf6;border-left:4px solid #46C6AB}
+.cl-box{width:24px;height:24px;border-radius:7px;border:2.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .18s;background:var(--bg);margin-top:1px;color:transparent}
+.cl-item.checked .cl-box{background:linear-gradient(135deg,#46C6AB,#24B69B);border-color:#46C6AB;color:#fff}
+.cl-body{flex:1}
+.cl-crit{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:2px}
+.cl-item.checked .cl-crit{color:var(--GD)}
+.cl-behavior{font-size:13px;font-weight:700;color:var(--ink);line-height:1.4}
+.cl-example{font-size:11px;font-weight:500;color:var(--muted);margin-top:3px;line-height:1.4;font-style:italic}
+
+/* ── BAND METER (live checklist scoring) ────────────────────── */
+.band-meter{background:var(--card);border-radius:var(--rl);padding:14px 16px;box-shadow:var(--sh);margin-bottom:12px;text-align:center}
+.bm-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
+.bm-band{font-size:44px;font-weight:900;color:#2F6BFF;line-height:1;font-family:'Sora',sans-serif}
+.bm-track{height:10px;background:var(--border);border-radius:99px;overflow:hidden;margin:8px 0 6px}
+.bm-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#FF6B5E,#F4D53F,#46C6AB);transition:width .4s ease}
+.bm-sub{font-size:11px;font-weight:600;color:var(--muted)}
+
+/* ── BAND RESULT CARD ───────────────────────────────────────── */
+.band-hero{background:linear-gradient(135deg,#2F6BFF,#6C3BFF);border-radius:var(--rxl);padding:24px 20px;text-align:center;color:#fff;margin-bottom:13px;box-shadow:none}
+.bh-lbl{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.58;margin-bottom:6px}
+.bh-band{font-size:52px;font-weight:900;color:var(--A);line-height:1}
+.bh-score{font-size:14px;font-weight:800;opacity:.7;margin-top:5px}
+.bh-desc{font-size:12px;opacity:.6;margin-top:7px;line-height:1.55}
+
+/* ── FEEDBACK CARDS ─────────────────────────────────────────── */
+.fb{border-radius:var(--rl);padding:14px;margin-bottom:9px}
+.fb-good{background:#e6faf6;border:1.5px solid #46C6AB}
+.fb-work{background:#fffde8;border:1.5px solid #F4D53F}
+.fb-tip{background:#eef2ff;border:1.5px solid #6C3BFF}
+.fb-head{font-size:13px;font-weight:800;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.fb-item{font-size:13px;font-weight:500;line-height:1.6;margin-bottom:5px;display:flex;gap:7px;align-items:flex-start}
+.fb-item:last-child{margin-bottom:0}
+
+/* ── INFO LIST ──────────────────────────────────────────────── */
+.info-list{display:flex;flex-direction:column;gap:0}
+.info-row{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
+.info-row:last-child{border-bottom:none;padding-bottom:0}
+.ir-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.ir-t{font-size:13px;font-weight:800;color:var(--ink)}
+.ir-s{font-size:12px;font-weight:500;color:var(--muted);margin-top:2px;line-height:1.5}
+
+/* ── ALERTS ─────────────────────────────────────────────────── */
+.alert{padding:11px 13px;border-radius:var(--r);font-size:13px;font-weight:600;line-height:1.5;margin-bottom:11px;display:flex;gap:9px;align-items:flex-start}
+.al-p{background:var(--PL);color:var(--P)}
+.al-g{background:var(--GL);color:var(--GD)}
+.al-a{background:var(--AL);color:var(--AD)}
+
+/* ── STAT GRID ──────────────────────────────────────────────── */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:13px}
+.stat-box{background:var(--card);border-radius:var(--rl);padding:13px;text-align:center;box-shadow:var(--sh)}
+.st-num{font-size:24px;font-weight:900;line-height:1}
+.st-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:3px}
+
+/* ── SCORE BAR ──────────────────────────────────────────────── */
+.sb{margin-bottom:9px}
+.sb-top{display:flex;justify-content:space-between;margin-bottom:3px}
+.sb-l{font-size:12px;font-weight:700;color:var(--ink2)}
+.sb-v{font-size:12px;font-weight:800;color:var(--P)}
+.sb-track{height:7px;background:var(--border);border-radius:99px;overflow:hidden}
+.sb-fill{height:100%;border-radius:99px;transition:width .5s ease}
+
+/* ── PHRASE CHIPS ───────────────────────────────────────────── */
+.pb-cat{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:9px 0 5px}
+.phrase{display:inline-block;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);padding:6px 10px;font-size:12px;font-weight:600;margin:3px 3px 0 0;cursor:pointer;transition:all .15s;font-family:inherit}
+.phrase:active,.phrase.copied{background:var(--P);color:#fff;border-color:var(--P)}
+
+/* ── DIALOGUE (model script) ────────────────────────────────── */
+.dlg{display:flex;gap:9px;margin-bottom:9px}
+.dlg-av{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;flex-shrink:0;margin-top:2px}
+.dlg-bubble{flex:1;background:var(--bg);border-radius:0 11px 11px 11px;padding:9px 11px;font-size:13px;line-height:1.6;border-left:3px solid}
+.dlg-tag{font-size:10px;font-weight:800;display:inline-block;padding:1px 7px;border-radius:4px;margin-left:5px;vertical-align:middle}
+
+/* ── AI LOADING ─────────────────────────────────────────────── */
+.ai-load{background:var(--PL);border-radius:var(--r);padding:16px;text-align:center;margin-bottom:11px}
+.ai-dots span{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--P);margin:0 2px;animation:ab .8s ease infinite}
+.ai-dots span:nth-child(2){animation-delay:.15s}
+.ai-dots span:nth-child(3){animation-delay:.3s}
+@keyframes ab{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+/* ── LECTURER STUDENT ROW ───────────────────────────────────── */
+.l-row{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--r);background:var(--bg);margin-bottom:5px}
+.l-av{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#2F6BFF,#6C3BFF);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0}
+.l-info{flex:1}
+.l-name{font-size:13px;font-weight:700;color:var(--ink)}
+.l-sub{font-size:11px;font-weight:500;color:var(--muted)}
+.bchip{padding:3px 9px;border-radius:99px;font-size:11px;font-weight:800}
+.bchip.h{background:#e6faf6;color:#24B69B;font-weight:900}
+.bchip.h::before{content:"●";margin-right:3px;font-size:8px;vertical-align:middle}
+.bchip.m{background:#fffde8;color:#b89000;font-weight:900}
+.bchip.m::before{content:"●";margin-right:3px;font-size:8px;vertical-align:middle}
+.bchip.l{background:#fff0ef;color:#FF6B5E;font-weight:900}
+.bchip.l::before{content:"●";margin-right:3px;font-size:8px;vertical-align:middle}
+.strategy{border-radius:var(--r);padding:12px;margin-bottom:7px;border-left:4px solid}
+.str-r{background:#FFF1F2;border-color:var(--R)}
+.str-a{background:var(--AL);border-color:var(--A)}
+.str-g{background:var(--GL);border-color:var(--G)}
+.str-t{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:2px}
+.str-b{font-size:12px;font-weight:500;color:var(--ink2);line-height:1.5}
+
+/* ── MISC ───────────────────────────────────────────────────── */
+.hidden{display:none!important}
+
+/* ── TOAST NOTIFICATIONS ────────────────────────────────────── */
+#toast-container{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:7px;pointer-events:none;width:calc(100% - 32px);max-width:448px}
+.toast{background:#1e2d4a;color:#fff;border-radius:12px;padding:11px 16px;font-size:13px;font-weight:700;box-shadow:0 6px 22px rgba(0,0,0,.18);display:flex;align-items:center;gap:9px;animation:toastIn .28s cubic-bezier(.34,1.56,.64,1) both}
+.toast.toast-success{background:linear-gradient(135deg,var(--taskB1),var(--taskB2))}
+.toast.toast-warn{background:linear-gradient(135deg,var(--yellow),var(--yellow2));color:#171133}
+.toast.toast-error{background:linear-gradient(135deg,var(--orange1),var(--orange2))}
+.toast.toast-info{background:linear-gradient(135deg,var(--taskA1),var(--taskA2))}
+.toast.leaving{animation:toastOut .22s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateY(-14px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateY(-10px) scale(.94)}}
+
+/* ── MODAL CONFIRM ──────────────────────────────────────────── */
+#modal-overlay{position:fixed;inset:0;background:rgba(10,15,30,.55);z-index:8888;display:flex;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0);backdrop-filter:blur(3px);animation:modalFadeIn .18s ease}
+#modal-overlay.hidden{display:none}
+#modal-box{background:#fff;border-radius:22px 22px 0 0;width:100%;max-width:480px;padding:26px 20px 20px;box-shadow:0 -8px 32px rgba(0,0,0,.14)}
+#modal-icon{font-size:36px;text-align:center;margin-bottom:10px}
+#modal-title{font-size:17px;font-weight:900;color:var(--ink);text-align:center;margin-bottom:7px;font-family:'Sora',sans-serif}
+#modal-msg{font-size:13px;font-weight:600;color:var(--muted);text-align:center;line-height:1.55;margin-bottom:18px}
+#modal-actions{display:flex;gap:9px}
+@keyframes modalFadeIn{from{opacity:0}to{opacity:1}}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:#2F6BFF;cursor:pointer;border:2px solid #2F6BFF;background:#eef2ff;font-family:inherit;padding:8px 14px;margin-bottom:11px;border-radius:var(--r);transition:all .15s}
+input[type=text],input[type=password]{font-family:inherit}
+@media print{#bnav,.btn,.back-btn,.rec-btn,.tbtn{display:none!important}}
+
+/* ── COACH CARDS ─────────────────────────────────────────────── */
+.coach-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:13px}
+.coach-card{border-radius:var(--rl);padding:12px 8px;text-align:center;cursor:pointer;border:2.5px solid var(--border);background:var(--card);transition:all .18s;font-family:inherit}
+.coach-card.sel{border-color:var(--P);background:var(--PL)}
+.coach-avatar{font-size:32px;margin-bottom:5px;line-height:1}
+.coach-name{font-size:12px;font-weight:900;color:var(--ink);margin-bottom:2px}
+.coach-role{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;line-height:1.3}
+.coach-card.sel .coach-name{color:var(--P)}
+.coach-card.sel .coach-role{color:var(--T)}
+/* ── MISSION CARD ────────────────────────────────────────────── */
+.mission-card{background:var(--P);border-radius:var(--rxl);padding:16px 18px;margin-bottom:13px;color:#fff;position:relative;overflow:hidden}
+.mission-card::after{content:"🎯";position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:44px;opacity:.15}
+.mc-tag{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;opacity:.6;margin-bottom:4px}
+.mc-title{font-size:16px;font-weight:900;margin-bottom:7px;line-height:1.2}
+.mc-row{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;opacity:.85;margin-bottom:3px}
+.mc-streak{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.14);border-radius:99px;padding:4px 11px;font-size:11px;font-weight:800;margin-top:8px}
+/* ── BAND READINESS MAP ──────────────────────────────────────── */
+.readiness-map{margin-bottom:13px}
+.rm-step{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border-radius:var(--r);margin-bottom:6px;border:2px solid transparent;position:relative}
+.rm-step.done{background:var(--GL);border-color:#A7F3D0}
+.rm-step.active{background:var(--PL);border-color:var(--P)}
+.rm-step.locked{background:#F8FAFC;border-color:var(--border)}
+.rm-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.rm-band{font-size:14px;font-weight:900;margin-bottom:2px}
+.rm-desc{font-size:11px;font-weight:600;color:var(--muted);line-height:1.4}
+.rm-badge{font-size:10px;font-weight:800;padding:2px 9px;border-radius:99px;margin-left:auto;flex-shrink:0;align-self:center}
+/* ── ENHANCED FEEDBACK ───────────────────────────────────────── */
+.fb-coach-header{display:flex;align-items:center;gap:10px;background:var(--PL);border-radius:var(--r);padding:11px 13px;margin-bottom:11px}
+.fb-coach-av{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.fb-coach-name{font-size:12px;font-weight:900;color:var(--P)}
+.fb-coach-msg{font-size:12px;font-weight:600;color:var(--ink2);line-height:1.4;font-style:italic}
+.fb-prep-check{background:var(--card);border-radius:var(--r);padding:11px 13px;margin-bottom:9px;box-shadow:var(--sh)}
+.fpc-row{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid var(--border)}
+.fpc-row:last-child{border-bottom:none;padding-bottom:0}
+.fpc-label{font-size:12px;font-weight:800;color:var(--ink);flex:1}
+.fpc-status{font-size:13px}
+.mission-next{background:linear-gradient(135deg,#46C6AB,#24B69B);border-radius:var(--r);padding:11px 13px;margin-bottom:9px;color:#fff}
+.mn-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;opacity:.7;margin-bottom:3px}
+.mn-text{font-size:13px;font-weight:700;line-height:1.4}
+/* ── WARMUP CARD ─────────────────────────────────────────────── */
+.warmup-card{background:linear-gradient(135deg,#171133,#6C3BFF);border-radius:var(--rxl);padding:18px;color:#fff;margin-bottom:13px;box-shadow:none}
+.wc-step-indicator{display:flex;gap:5px;margin-bottom:11px}
+.wc-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);transition:background .2s}
+.wc-dot.act{background:#fff}
+.wc-prompt{font-size:15px;font-weight:800;line-height:1.4;margin-bottom:5px}
+.wc-hint{font-size:12px;opacity:.7;font-weight:600;margin-bottom:13px}
+.wc-btn{background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.35);border-radius:var(--r);padding:10px 16px;font-family:inherit;font-size:13px;font-weight:800;color:#fff;cursor:pointer;width:100%;transition:background .15s}
+.wc-btn:active{background:rgba(255,255,255,.3)}
+
+/* ── SPEAKSMART ENHANCED STYLES ─────────────────────────────── */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle at 1px 1px,rgba(108,59,255,.06) 1px,transparent 0);
+  background-size:20px 20px}
+
+/* Screen backgrounds get slight gradient refresh */
+.screen{background:var(--bg)}
+
+/* Hero card richer orbs */
+.hero::before{content:"";position:absolute;right:-20px;top:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none}
+.hero::after{content:"";position:absolute;left:-15px;bottom:-25px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none}
+
+/* Stat box refinement */
+.stat-box{background:var(--card);border-radius:var(--rl);padding:14px;text-align:center;box-shadow:var(--sh);border:1px solid rgba(212,226,240,.5)}
+
+/* Card-xs refinement */
+.card-xs{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:13px;margin-bottom:9px;border:1px solid rgba(212,226,240,.5)}
+
+/* Section heading styling tweak */
+.sh{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:16px 0 9px;display:flex;align-items:center;gap:8px}
+.sh::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+/* Alert refinement */
+.al-p{background:#eef2ff;color:#2F6BFF;border:1px solid rgba(47,107,255,.2)}
+.al-g{background:#e6faf6;color:#24B69B;border:1px solid rgba(70,198,171,.2)}
+.al-a{background:#fffde8;color:#b89000;border:1px solid rgba(244,213,63,.35)}
+
+/* Mission card accent */
+.mc-tag{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.12em}
+
+/* Bottom nav icon size bump */
+.bn .bni{font-size:22px;line-height:1;transition:transform .2s}
+
+/* Input refinements for registration form */
+.f-in,.f-sel{border-radius:12px}
+.f-in:focus{background:rgba(255,255,255,.18)}
+
+/* Smooth scroll */
+.screen{scroll-behavior:smooth}
+
+/* Examiner card border radius boost */
+.examiner-card{border-radius:14px}
+
+/* Step circles more refined */
+.sc.act{background:linear-gradient(135deg,#2F6BFF,#6C3BFF);color:#fff;box-shadow:0 0 0 4px var(--PL)}
+
+/* Phrase chips */
+.phrase:hover{background:var(--PL);border-color:var(--T);color:var(--P)}
+
+/* Topic items */
+.topic-item:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
+.topic-item{transition:all .2s}
+
+
+/* ── SPLASH COACH CARD SELECTED ────────────────── */
+.splash-coach-btn.sel{background:rgba(244,213,63,.25);border-color:#F4D53F}
+/* ── PREP CELL / TIMER / REC / TOPIC BADGE ─────── */
+.prep-cell{border-radius:var(--rl);padding:13px 12px}
+.t-btns{display:flex;gap:8px;margin-top:4px}
+.rec-btn.idle{background:#FF6B5E}
+.ti-num{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;flex-shrink:0}
+/* ── STEP DONE COLOR ────────────────────────────── */
+.sc.done{background:linear-gradient(135deg,var(--taskB1),var(--taskB2));color:#fff}
+.sln.done{background:linear-gradient(90deg,var(--taskB1),var(--taskB2))}
+
+
+
+/* ── COLOUR SEQUENCE (consolidated) ─────────────────────────── */
+/* Home tabs */
+.htab-overview.act{background:linear-gradient(135deg,var(--taskA1),var(--taskA2));color:#fff}
+.htab-format.act{background:linear-gradient(135deg,var(--taskB1),var(--taskB2));color:#fff}
+.htab-bands.act{background:linear-gradient(135deg,var(--yellow),var(--yellow2));color:#171133}
+.htab-readiness.act{background:linear-gradient(135deg,var(--orange1),var(--orange2));color:#fff}
+
+/* Task A = blue/purple */
+#ltab-a.act,#ptab-a.act,#la-wrap .tab.act,#pa-wrap .sc.act,#pa-wrap .btn-p,.hero.blue{
+  background:linear-gradient(135deg,var(--taskA1),var(--taskA2));color:#fff}
+#pa-wrap .sl.act{color:var(--taskA1)}
+#pa-wrap .sln.done,#pa-wrap .sc.done{background:linear-gradient(135deg,var(--taskB1),var(--taskB2));color:#fff}
+
+/* Task B = green */
+#ltab-b.act,#ptab-b.act,#lb-wrap .tab.act,#pb-wrap .sc.act,#pb-wrap .btn-p,#pb-wrap .btn-g,
+#pb-content .btn-p,.hero.green,#pb-content .band-hero,#pb-content .mission-next{
+  background:linear-gradient(135deg,var(--taskB1),var(--taskB2));color:#fff}
+#pb-wrap .sl.act{color:var(--taskB2)}
+#pb-wrap .sln.done,#pb-wrap .sc.done{background:linear-gradient(135deg,var(--taskB1),var(--taskB2));color:#fff}
+#lb-wrap .tab:not(.act),#ptab-b:not(.act){color:var(--taskB2)}
+
+/* Practice home — selected task colour */
+#ph-wrap:has(#ptab-a.act) > .btn-p,
+#ph-wrap:has(#ptab-a.act) .topic-item.sel{background:linear-gradient(135deg,var(--taskA1),var(--taskA2));border-color:var(--taskA1);color:#fff}
+#ph-wrap:has(#ptab-b.act) > .btn-p,
+#ph-wrap:has(#ptab-b.act) .topic-item.sel,
+#ph-wrap:has(#ptab-b.act) .tpill.act{background:linear-gradient(135deg,var(--taskB1),var(--taskB2));border-color:var(--taskB2);color:#fff}
+
+/* Back / Reset buttons = yellow */
+.btn-out,.back-btn,.tbtn-rst{
+  background:linear-gradient(135deg,var(--yellow),var(--yellow2));
+  border:2px solid var(--yellow);color:#171133;
+  box-shadow:0 5px 14px rgba(244,213,63,.22)}
+.btn-out:active,.back-btn:active,.tbtn-rst:active{background:linear-gradient(135deg,#e6c800,var(--yellow));color:#171133}
+
+/* Positive / next-action = green */
+.btn-g,.tbtn-go{background:linear-gradient(135deg,var(--taskB1),var(--taskB2));color:#fff}
+
+/* Skip / destructive = orange-red */
+.tbtn-skip,.prep-cell-c{background:linear-gradient(135deg,var(--orange1),var(--orange2));color:#fff}
+
+/* PREP cells */
+.prep-cell-p{background:linear-gradient(135deg,var(--taskA1),var(--taskA2))}
+.prep-cell-r{background:linear-gradient(135deg,var(--taskB1),var(--taskB2))}
+.prep-cell-e{background:linear-gradient(135deg,var(--yellow),var(--yellow2))}
+.prep-cell-e .prep-label,.prep-cell-e .prep-hint{color:#171133}
+
+/* Secondary tabs */
+#la-t1.act,#lb-t1.act,#lc-t1.act{background:linear-gradient(135deg,var(--taskA1),var(--taskA2));color:#fff}
+#la-t2.act,#lb-t2.act,#lc-t2.act{background:linear-gradient(135deg,var(--taskB1),var(--taskB2));color:#fff}
+#la-t3.act,#lb-t3.act,#lc-t3.act{background:linear-gradient(135deg,var(--yellow),var(--yellow2));color:#171133}
+
+/* Candidate role cards */
+.cand-btn.cand-A .cb-ltr{background:linear-gradient(135deg,var(--taskA1),var(--taskA2));color:#fff}
+.cand-btn.cand-B .cb-ltr{background:linear-gradient(135deg,var(--taskB1),var(--taskB2));color:#fff}
+.cand-btn.cand-C .cb-ltr{background:linear-gradient(135deg,var(--yellow),var(--yellow2));color:#171133}
+.cand-btn.cand-D .cb-ltr{background:linear-gradient(135deg,var(--orange1),var(--orange2));color:#fff}
+.cand-btn.cand-A.sel{background:linear-gradient(135deg,var(--taskA1),var(--taskA2));border-color:var(--taskA1);color:#fff;box-shadow:0 4px 16px rgba(62,104,255,.28)}
+.cand-btn.cand-B.sel{background:linear-gradient(135deg,var(--taskB1),var(--taskB2));border-color:var(--taskB2);color:#fff;box-shadow:0 4px 16px rgba(41,191,165,.28)}
+.cand-btn.cand-C.sel{background:linear-gradient(135deg,var(--yellow),var(--yellow2));border-color:var(--yellow);color:#171133;box-shadow:0 4px 16px rgba(244,213,63,.26)}
+.cand-btn.cand-D.sel{background:linear-gradient(135deg,var(--orange1),var(--orange2));border-color:var(--orange1);color:#fff;box-shadow:0 4px 16px rgba(255,118,94,.28)}
+.cand-btn.cand-A.sel .cb-txt,.cand-btn.cand-B.sel .cb-txt,.cand-btn.cand-D.sel .cb-txt{color:#fff}
+.cand-btn.cand-C.sel .cb-txt{color:#171133}
+.cand-btn.cand-A.sel .cb-ltr,.cand-btn.cand-B.sel .cb-ltr,.cand-btn.cand-D.sel .cb-ltr{background:rgba(255,255,255,.16);color:#fff}
+.cand-btn.cand-C.sel .cb-ltr{background:rgba(23,17,51,.08);color:#171133}
+
+/* Bottom nav active highlight */
+.bn.act{color:var(--taskA1)}
+.bn.act::after{background:linear-gradient(90deg,var(--yellow),var(--yellow2));box-shadow:0 3px 10px rgba(244,213,63,.35)}
+
+/* Inputs */
+input::placeholder,textarea::placeholder,.f-in::placeholder,.ta::placeholder{color:var(--placeholder);opacity:.78;font-weight:600}
+.f-in,.f-sel,input[type=text],input[type=password],select,textarea.ta,
+#l-nm,#l-no,#l-grp,#l-band,#l-weak{background:var(--softInput);border:1.5px solid var(--border);color:var(--ink)}
+#sc-splash .f-in,#sc-splash .f-sel{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.28);color:#fff}
+#sc-splash .f-in::placeholder{color:rgba(255,255,255,.66)}
+textarea.ta:focus,#l-nm:focus,#l-no:focus,#l-grp:focus,#l-band:focus,#l-weak:focus{
+  border-color:var(--taskB1);box-shadow:0 0 0 3px rgba(73,210,182,.18)}
+
+/* Lecturer page */
+#lc1 .btn-p{background:linear-gradient(135deg,var(--taskB1),var(--taskB2));color:#fff}
+#lc1 .btn-out{background:linear-gradient(135deg,var(--yellow),var(--yellow2));color:#171133}
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ SPLASH / REGISTRATION ════════════════ -->
+<div id="sc-splash" class="screen active">
+  <div class="spl-logo">🎓</div>
+  <div class="spl-title">MUET SmartSpeaking</div>
+  <div class="spl-sub">Your friendly MUET Speaking Coach · POLIPD 2026</div>
+  <div class="spl-badge">🇲🇾 POLIPD 2026 · Beginner Friendly</div>
+
+  <!-- Coach welcome -->
+  <div style="width:100%;margin-top:18px;animation:fu .5s .25s both">
+    <div style="background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.2);border-radius:var(--rxl);padding:16px 16px 12px">
+      <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.09em;margin-bottom:10px">Choose Your Coach</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:4px" id="splash-coaches">
+        <div class="splash-coach-btn sel" id="sc-maya" onclick="selectSplashCoach('maya')" style="border-radius:13px;padding:10px 5px;text-align:center;cursor:pointer;border:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.15);transition:all .18s">
+          <div style="font-size:28px;margin-bottom:4px">👩‍🏫</div>
+          <div style="font-size:11px;font-weight:900;color:#fff">Coach Maya</div>
+          <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.6);margin-top:2px;line-height:1.3">Friendly · Builds Confidence</div>
+        </div>
+        <div class="splash-coach-btn" id="sc-zara" onclick="selectSplashCoach('zara')" style="border-radius:13px;padding:10px 5px;text-align:center;cursor:pointer;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);transition:all .18s">
+          <div style="font-size:28px;margin-bottom:4px">👩‍💼</div>
+          <div style="font-size:11px;font-weight:900;color:#fff">Examiner Zara</div>
+          <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.6);margin-top:2px;line-height:1.3">Strict · Exam Realistic</div>
+        </div>
+        <div class="splash-coach-btn" id="sc-adam" onclick="selectSplashCoach('adam')" style="border-radius:13px;padding:10px 5px;text-align:center;cursor:pointer;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);transition:all .18s">
+          <div style="font-size:28px;margin-bottom:4px">👨‍💻</div>
+          <div style="font-size:11px;font-weight:900;color:#fff">Coach Adam</div>
+          <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.6);margin-top:2px;line-height:1.3">Fluency · Beat Hesitation</div>
+        </div>
+      </div>
+      <div id="splash-coach-msg" style="font-size:12px;font-weight:600;color:rgba(255,255,255,.8);text-align:center;font-style:italic;padding:7px 0 2px;line-height:1.4">"Hi! I will help you speak with confidence. Let us start with your target band." — Coach Maya</div>
+    </div>
+  </div>
+
+  <div class="spl-card">
+    <label class="f-lbl" for="r-name">Full Name</label>
+    <input id="r-name" class="f-in" placeholder="e.g. Nurul Aina binti Ahmad" autocomplete="name" aria-label="Full name"/>
+    <label class="f-lbl" for="r-no">Registration / Matrix No.</label>
+    <input id="r-no" class="f-in" placeholder="e.g. 24DKT15F2001" aria-label="Registration number"/>
+    <label class="f-lbl" for="r-cls">Class / Group</label>
+    <input id="r-cls" class="f-in" placeholder="e.g. DKT2B / Group 4" aria-label="Class or group"/>
+    <label class="f-lbl" for="r-weak">My Weakest Skill</label>
+    <select id="r-weak" class="f-sel" aria-label="Weakest skill">
+      <option value="fluency">😶 I speak too slowly / hesitate a lot</option>
+      <option value="ideas">💭 I run out of ideas quickly</option>
+      <option value="interact">🤝 I find it hard to respond to others</option>
+      <option value="vocab">📚 My vocabulary is limited</option>
+      <option value="confidence">😰 I am shy / nervous to speak</option>
+    </select>
+    <label class="f-lbl" for="r-band">Target Band (Your Goal)</label>
+    <select id="r-band" class="f-sel" aria-label="Target band">
+      <option value="b">Beginner — Aiming for Band 2.5–3.0</option>
+      <option value="i" selected>Intermediate — Aiming for Band 3.5–4.5</option>
+      <option value="a">Advanced — Aiming for Band 5.0+</option>
+    </select>
+    <label class="f-lbl" for="r-ai">AI Feedback</label>
+    <select id="r-ai" class="f-sel" aria-label="AI feedback mode">
+      <option value="offline">📝 Smart Offline Feedback (No internet needed)</option>
+      <option value="gemini">🤖 Gemini AI (Paste your free API key below)</option>
+    </select>
+    <div id="gem-wrap" class="hidden">
+      <label class="f-lbl" for="r-gem">Gemini API Key (free at aistudio.google.com)</label>
+      <input id="r-gem" class="f-in" type="password" placeholder="Paste key here…" aria-label="Gemini API key"/>
+    </div>
+    <button class="btn-spl" onclick="saveProfile()">Let's Start! 🚀</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ HOME / ABOUT ════════════════════════ -->
+<div id="sc-home" class="screen">
+  <div class="pad">
+    <div class="pg-title" id="h-name">Hello! 👋</div>
+    <div class="pg-sub" id="h-meta">MUET SmartSpeaking</div>
+  </div>
+  <div class="body-pad">
+    <!-- Coach greeting card -->
+    <div id="h-coach-card" style="display:flex;gap:11px;align-items:flex-start;background:var(--card);border-radius:var(--rl);box-shadow:var(--sh);padding:14px;margin-bottom:13px;cursor:pointer" onclick="editProfile()">
+      <div id="h-coach-av" style="width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;background:var(--PL)">👩‍🏫</div>
+      <div style="flex:1">
+        <div style="font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px" id="h-coach-name">Coach Maya</div>
+        <div style="font-size:13px;font-weight:700;color:var(--ink);line-height:1.4" id="h-coach-msg">"Welcome back! Ready to practise today?"</div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);margin-top:3px" id="h-pmeta">MPM 800 · Speaking Component</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--muted);padding-top:2px">✏️</div>
+    </div>
+    <!-- Today's Mission -->
+    <div id="h-mission" class="mission-card">
+      <div class="mc-tag">Today's MUET Mission</div>
+      <div class="mc-title" id="mc-title">Practise 1 Task A question</div>
+      <div class="mc-row">⏱️ <span id="mc-time">2 minutes</span></div>
+      <div class="mc-row">🎯 <span id="mc-focus">Focus: Give a specific Malaysian example</span></div>
+      <div class="mc-streak" id="mc-streak">🔥 0-day streak</div>
+    </div>
+    <div class="tabs">
+      <button class="tab act htab-overview" onclick="homeTab('overview')">📋 Overview</button>
+      <button class="tab htab-format" onclick="homeTab('format')" style="color:var(--P)">📐 Format</button>
+      <button class="tab htab-bands" onclick="homeTab('bands')" style="color:var(--P)">🏅 Bands</button>
+      <button class="tab htab-readiness" onclick="homeTab('readiness')" style="color:var(--P)">🗺️ Path</button>
+    </div>
+    <div id="ht-overview">
+      <div class="card">
+        <div style="font-size:15px;font-weight:900;color:var(--ink);margin-bottom:10px">What is MUET Speaking?</div>
+        <div class="info-list">
+          <div class="info-row"><div class="ir-icon" style="background:#eef2ff">🎓</div><div><div class="ir-t">Malaysian University English Test</div><div class="ir-s">Set by MPM. Required for university entry. Speaking = 25% of total score (90 out of 360 marks).</div></div></div>
+          <div class="info-row"><div class="ir-icon" style="background:#e6faf6">⏱️</div><div><div class="ir-t">Total Duration: ~30 minutes</div><div class="ir-s">Task A: 2 min prep + 2 min speaking. Task B: 3 min prep + 8–12 min group discussion.</div></div></div>
+          <div class="info-row"><div class="ir-icon" style="background:#fffde8">👥</div><div><div class="ir-t">Group Size: 2–4 Candidates</div><div class="ir-s">Two examiners observe throughout. You cannot see the examiners' marks during the test.</div></div></div>
+          <div class="info-row"><div class="ir-icon" style="background:#ede9ff">📊</div><div><div class="ir-t">Scored on 6 Criteria</div><div class="ir-s">Task Fulfilment, Fluency &amp; Coherence, Vocabulary, Language Accuracy, Communicative Ability, Pronunciation.</div></div></div>
+        </div>
+      </div>
+      <div class="alert al-p"><span>💡</span><div>Start with <strong>Learn</strong> to study PREP and interaction skills. Then use <strong>Practice</strong> to record yourself. Check <strong>Results</strong> to track progress.</div></div>
+    </div>
+    <div id="ht-format" class="hidden">
+      <div class="card">
+        <div style="font-size:15px;font-weight:900;color:var(--P);margin-bottom:10px">🎤 Task A — Individual Presentation</div>
+        <div class="info-list">
+          <div class="info-row"><div class="ir-icon" style="background:#eef2ff">📄</div><div><div class="ir-t">One situation, four different points</div><div class="ir-s">All candidates read the same situation. Each is assigned a different point (A, B, C or D) to present.</div></div></div>
+          <div class="info-row"><div class="ir-icon" style="background:#eef2ff">⏱️</div><div><div class="ir-t">2 min prep → 2 min speaking</div><div class="ir-s">Write bullet notes only. No reading full sentences. Use PREP: Point → Reason → Example → Restate.</div></div></div>
+          <div class="info-row"><div class="ir-icon" style="background:#eef2ff">🏷️</div><div><div class="ir-t">Scored on Production</div><div class="ir-s">Task Fulfilment, Fluency, Vocabulary, Accuracy, Communicative Ability, Pronunciation.</div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:15px;font-weight:900;color:var(--G);margin-bottom:10px">👥 Task B — Group Discussion</div>
+        <div class="info-list">
+          <div class="info-row"><div class="ir-icon" style="background:#e6faf6">🔗</div><div><div class="ir-t">Same topic as Task A always</div><div class="ir-s">A broader question + 5 mind-map ideas. You may support, oppose, or add your own ideas.</div></div></div>
+          <div class="info-row"><div class="ir-icon" style="background:#e6faf6">⏱️</div><div><div class="ir-t">3 min prep → 8–12 min discussion</div><div class="ir-s">Group MUST decide ONE best suggestion before time ends. Candidate A usually opens and closes.</div></div></div>
+          <div class="info-row"><div class="ir-icon" style="background:#e6faf6">🤝</div><div><div class="ir-t">Scored on Interaction</div><div class="ir-s">Same 6 criteria — but Interaction gets highest weight. Respond to others by name, ask questions.</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div id="ht-bands" class="hidden">
+      <div class="card"><div id="bands-list"></div></div>
+    </div>
+    <div id="ht-readiness" class="hidden">
+      <div id="readiness-map"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ LEARN ════════════════════════════════ -->
+<div id="sc-learn" class="screen">
+  <div class="pad"><div class="pg-title">Learn 📖</div><div class="pg-sub">Study this before you practise</div></div>
+  <div class="body-pad">
+    <div class="tabs">
+      <button class="tab act" id="ltab-a" onclick="learnTab('a')">🎤 Task A</button>
+      <button class="tab" id="ltab-b" onclick="learnTab('b')">👥 Task B</button>
+    </div>
+
+    <!-- Task A Learn -->
+    <div id="la-wrap">
+      <div class="hero blue"><div class="hc-tag">Task A Guide</div><div class="hc-title">Individual Presentation</div><div class="hc-sub">2 min prep · 2 min speaking · PREP structure</div><div class="hc-pill">📋 Read this first!</div></div>
+      <div class="tabs">
+        <button class="tab act" id="la-t1" onclick="learnATab(1)" style="font-size:11px">PREP Steps</button>
+        <button class="tab" id="la-t2" onclick="learnATab(2)" style="font-size:11px">How to Start</button>
+        <button class="tab" id="la-t3" onclick="learnATab(3)" style="font-size:11px">Model Answer</button>
+      </div>
+      <div id="la1">
+        <div class="alert al-p"><span>🎯</span><div><strong>PREP = Point → Reason → Example → Point (Restate).</strong> Follow this order every time. It is your speaking map!</div></div>
+        <div class="card" style="border-left:4px solid #2563EB">
+          <div style="font-size:10px;font-weight:800;color:#2563EB;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">P — Point · State your assigned position</div>
+          <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px">Begin with your candidate point directly and clearly.</div>
+          <div style="font-size:12px;color:var(--muted);font-style:italic">"I strongly believe that [your point] is the most important because…"</div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--AD)">
+          <div style="font-size:10px;font-weight:800;color:var(--AD);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">R — Reason · Explain WHY your point matters</div>
+          <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px">Give ONE strong reason. One clear reason is better than three weak ones.</div>
+          <div style="font-size:12px;color:var(--muted);font-style:italic">"This is because… / The main reason is that…"</div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--G)">
+          <div style="font-size:10px;font-weight:800;color:var(--G);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">E — Example · Prove it with a Malaysian example</div>
+          <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px">Give ONE specific local example — a programme, statistic, or real event in Malaysia.</div>
+          <div style="font-size:12px;color:var(--muted);font-style:italic">"For example, in Malaysia… / Studies in Malaysia show…"</div>
+        </div>
+        <div class="card" style="border-left:4px solid var(--ink2)">
+          <div style="font-size:10px;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">P+ — Restate · Close confidently</div>
+          <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px">Repeat your main position. End with "Thank you."</div>
+          <div style="font-size:12px;color:var(--muted);font-style:italic">"Therefore, I strongly believe that [restate point]. Thank you."</div>
+        </div>
+        <button class="btn btn-p" onclick="goTo('practice');setPracTab('A')">🎤 Try Task A Practice →</button>
+      </div>
+      <div id="la2" class="hidden">
+        <div class="card">
+          <div style="font-size:15px;font-weight:900;color:var(--ink);margin-bottom:10px">How to Open Task A</div>
+          <div class="info-list">
+            <div class="info-row"><div class="ir-icon" style="background:var(--PL);font-size:15px">1</div><div><div class="ir-t">Greet the examiner</div><div class="ir-s">"Good morning to the examiner and fellow candidates. I am Candidate [A/B/C/D]."</div></div></div>
+            <div class="info-row"><div class="ir-icon" style="background:var(--PL);font-size:15px">2</div><div><div class="ir-t">Refer to the situation briefly</div><div class="ir-s">"Based on the situation given regarding [topic]…"</div></div></div>
+            <div class="info-row"><div class="ir-icon" style="background:var(--PL);font-size:15px">3</div><div><div class="ir-t">State your point (P)</div><div class="ir-s">"I strongly believe that [your assigned point] is the most important because…"</div></div></div>
+            <div class="info-row"><div class="ir-icon" style="background:var(--PL);font-size:15px">4</div><div><div class="ir-t">Follow PREP, then conclude</div><div class="ir-s">Reason → Example → Restate. Always end with "Thank you."</div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="font-size:14px;font-weight:900;color:var(--ink);margin-bottom:8px">Useful Task A Phrases</div>
+          <div class="pb-cat">Opening</div>
+          <span class="phrase" onclick="copyPhrase(this)">Good morning. I am Candidate A.</span>
+          <span class="phrase" onclick="copyPhrase(this)">I strongly believe that…</span>
+          <span class="phrase" onclick="copyPhrase(this)">In my opinion, the best way is…</span>
+          <div class="pb-cat">Giving a Reason</div>
+          <span class="phrase" onclick="copyPhrase(this)">This is because…</span>
+          <span class="phrase" onclick="copyPhrase(this)">The main reason is that…</span>
+          <span class="phrase" onclick="copyPhrase(this)">This is important because…</span>
+          <div class="pb-cat">Giving an Example</div>
+          <span class="phrase" onclick="copyPhrase(this)">For example, in Malaysia…</span>
+          <span class="phrase" onclick="copyPhrase(this)">A good example is…</span>
+          <span class="phrase" onclick="copyPhrase(this)">According to a study in Malaysia…</span>
+          <div class="pb-cat">Conclusion</div>
+          <span class="phrase" onclick="copyPhrase(this)">Therefore, I strongly believe that…</span>
+          <span class="phrase" onclick="copyPhrase(this)">In conclusion, [restate]. Thank you.</span>
+        </div>
+      </div>
+      <div id="la3" class="hidden">
+        <div class="card">
+          <div style="font-size:11px;font-weight:800;color:var(--muted);margin-bottom:9px;text-transform:uppercase;letter-spacing:.07em">Model Answer · Candidate B · Estimated Band 4.5</div>
+          <div style="font-size:12px;color:var(--muted);background:var(--bg);border-radius:var(--r);padding:9px 11px;margin-bottom:11px;line-height:1.5">Topic: Benefits of Technology in Education<br/>Point: Accessing educational resources online</div>
+          <div style="margin-bottom:9px"><div style="font-size:10px;font-weight:800;color:#2563EB;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;display:flex;align-items:center;gap:5px"><span style="background:#2563EB;color:#fff;padding:1px 6px;border-radius:4px">P</span>Point</div><div style="font-size:13px;line-height:1.75;background:#EFF6FF;border-radius:9px;padding:9px 11px;border-left:3px solid #2563EB">Good morning to the examiner and fellow candidates. I am Candidate B. I strongly believe that using technology to access vast educational resources is the greatest benefit of technology in education today.</div></div>
+          <div style="margin-bottom:9px"><div style="font-size:10px;font-weight:800;color:var(--AD);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;display:flex;align-items:center;gap:5px"><span style="background:var(--AD);color:#fff;padding:1px 6px;border-radius:4px">R</span>Reason</div><div style="font-size:13px;line-height:1.75;background:#FFFBEB;border-radius:9px;padding:9px 11px;border-left:3px solid var(--AD)">This is because students no longer need to rely solely on printed textbooks, which may be outdated. With a smartphone, they can instantly access up-to-date articles, e-books, and videos at any time.</div></div>
+          <div style="margin-bottom:9px"><div style="font-size:10px;font-weight:800;color:var(--G);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;display:flex;align-items:center;gap:5px"><span style="background:var(--G);color:#fff;padding:1px 6px;border-radius:4px">E</span>Example</div><div style="font-size:13px;line-height:1.75;background:var(--GL);border-radius:9px;padding:9px 11px;border-left:3px solid var(--G)">For example, platforms like Google Scholar have allowed Malaysian university students, including those in rural areas, to complete research assignments at no extra cost.</div></div>
+          <div><div style="font-size:10px;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;display:flex;align-items:center;gap:5px"><span style="background:var(--ink2);color:#fff;padding:1px 6px;border-radius:4px">P+</span>Restate</div><div style="font-size:13px;line-height:1.75;background:#F8FAFC;border-radius:9px;padding:9px 11px;border-left:3px solid var(--ink2)">Therefore, I strongly believe that providing students with open access to global knowledge through technology is the most significant benefit for Malaysian education. Thank you.</div></div>
+        </div>
+        <div class="alert al-g"><span>⭐</span><div>This model answer is about 165 words. Aim for 150–200 words in 2 minutes. Speak clearly — do not rush!</div></div>
+      </div>
+    </div>
+
+    <!-- Task B Learn -->
+    <div id="lb-wrap" class="hidden">
+      <div class="hero green"><div class="hc-tag">Task B Guide</div><div class="hc-title">Group Discussion</div><div class="hc-sub">3 min prep · 8–12 min discuss · Must reach consensus!</div><div class="hc-pill">🔗 Same topic as Task A always</div></div>
+      <div class="tabs">
+        <button class="tab act" id="lb-t1" onclick="learnBTab(1)" style="font-size:11px">How to Start</button>
+        <button class="tab" id="lb-t2" onclick="learnBTab(2)" style="font-size:11px">Phrase Bank</button>
+        <button class="tab" id="lb-t3" onclick="learnBTab(3)" style="font-size:11px">Model Script</button>
+      </div>
+      <div id="lb1">
+        <div class="alert al-g"><span>🔗</span><div><strong>Same topic rule:</strong> Task B ALWAYS continues from Task A. The group discusses a bigger question and must agree on ONE best answer before time ends.</div></div>
+        <div class="card">
+          <div style="font-size:14px;font-weight:900;color:var(--GD);margin-bottom:10px">4 Moves for a Great Task B</div>
+          <div class="info-list">
+            <div class="info-row"><div class="ir-icon" style="background:var(--GL);font-size:14px;font-weight:900;color:var(--GD)">1</div><div><div class="ir-t">OPEN — Candidate A starts</div><div class="ir-s">Restate the question. Share your idea. Invite: "What do you think, Candidate B?"</div></div></div>
+            <div class="info-row"><div class="ir-icon" style="background:var(--GL);font-size:14px;font-weight:900;color:var(--GD)">2</div><div><div class="ir-t">BUILD — Each candidate contributes</div><div class="ir-s">Idea + reason + example. RESPOND to others — agree, add, or politely disagree. Use names!</div></div></div>
+            <div class="info-row"><div class="ir-icon" style="background:var(--GL);font-size:14px;font-weight:900;color:var(--GD)">3</div><div><div class="ir-t">CHALLENGE — Disagree once</div><div class="ir-s">One polite disagreement + one question raises your Interaction score significantly.</div></div></div>
+            <div class="info-row"><div class="ir-icon" style="background:var(--GL);font-size:14px;font-weight:900;color:var(--GD)">4</div><div><div class="ir-t">DECIDE — Reach consensus</div><div class="ir-s">"Shall we agree that [X] is the best?" The group MUST decide ONE best idea.</div></div></div>
+          </div>
+        </div>
+        <div class="alert al-a"><span>⚠️</span><div>If the group does NOT reach consensus, marks are lost. Make sure someone closes: <strong>"Based on our discussion, we agree that…"</strong></div></div>
+      </div>
+      <div id="lb2" class="hidden">
+        <div class="card">
+          <div class="pb-cat">✅ Agreeing</div>
+          <span class="phrase" onclick="copyPhrase(this)">I completely agree with Candidate A because…</span>
+          <span class="phrase" onclick="copyPhrase(this)">That is a valid point. I would also add that…</span>
+          <span class="phrase" onclick="copyPhrase(this)">Building on what Candidate B said, I think…</span>
+          <span class="phrase" onclick="copyPhrase(this)">You are absolutely right. Furthermore…</span>
+          <div class="pb-cat">🔄 Polite Disagreement</div>
+          <span class="phrase" onclick="copyPhrase(this)">I see your point, however I believe…</span>
+          <span class="phrase" onclick="copyPhrase(this)">With respect, I have a different view…</span>
+          <span class="phrase" onclick="copyPhrase(this)">That may be true, but we should also consider…</span>
+          <span class="phrase" onclick="copyPhrase(this)">I understand your point, but I feel that…</span>
+          <div class="pb-cat">❓ Asking / Inviting</div>
+          <span class="phrase" onclick="copyPhrase(this)">Candidate C, what are your thoughts on this?</span>
+          <span class="phrase" onclick="copyPhrase(this)">Could you elaborate on that further?</span>
+          <span class="phrase" onclick="copyPhrase(this)">What do you think about this idea?</span>
+          <span class="phrase" onclick="copyPhrase(this)">Do you agree with Candidate A's point?</span>
+          <div class="pb-cat">🤝 Reaching Consensus</div>
+          <span class="phrase" onclick="copyPhrase(this)">Shall we agree that [X] is the best solution?</span>
+          <span class="phrase" onclick="copyPhrase(this)">Based on our discussion, we all agree that…</span>
+          <span class="phrase" onclick="copyPhrase(this)">In conclusion, our group decides that [X] is…</span>
+          <div class="pb-cat">💬 Keeping Discussion Going</div>
+          <span class="phrase" onclick="copyPhrase(this)">May I add something here?</span>
+          <span class="phrase" onclick="copyPhrase(this)">I would like to add that…</span>
+          <span class="phrase" onclick="copyPhrase(this)">Let us compare these two ideas.</span>
+          <span class="phrase" onclick="copyPhrase(this)">We are running out of time. Let us decide now.</span>
+        </div>
+      </div>
+      <div id="lb3" class="hidden">
+        <div class="card">
+          <div style="font-size:11px;font-weight:800;color:var(--muted);margin-bottom:9px;text-transform:uppercase;letter-spacing:.07em">Model Script · Band 4.5 · Sports Standards</div>
+          <div class="dlg"><div class="dlg-av" style="background:#2563EB">A</div><div class="dlg-bubble" style="border-color:#2563EB">I would like to begin. I think <em>upgrading sports facilities</em> is most effective. Candidate B, what is your view?<span class="dlg-tag" style="background:#EFF6FF;color:#2563EB">OPENS + INVITES</span></div></div>
+          <div class="dlg"><div class="dlg-av" style="background:var(--G)">B</div><div class="dlg-bubble" style="border-color:var(--G)">That is valid. However, I believe <em>identifying young talents</em> has a longer impact because it builds the future pipeline.<span class="dlg-tag" style="background:var(--AL);color:var(--AD)">DISAGREES</span></div></div>
+          <div class="dlg"><div class="dlg-av" style="background:var(--V)">C</div><div class="dlg-bubble" style="border-color:var(--V)">I agree with Candidate B. Could you clarify — through school competitions or national trials?<span class="dlg-tag" style="background:#EDE9FE;color:var(--V)">ASKS</span></div></div>
+          <div class="dlg"><div class="dlg-av" style="background:var(--AD)">D</div><div class="dlg-bubble" style="border-color:var(--AD)">Both. I would also add that <em>improving coaching standards</em> is crucial — talent needs guidance to develop.<span class="dlg-tag" style="background:var(--AL);color:var(--AD)">ADDS</span></div></div>
+          <div class="dlg"><div class="dlg-av" style="background:#2563EB">A</div><div class="dlg-bubble" style="border-color:var(--G)">Based on our discussion, shall we agree that <em>identifying young talents</em> is the best suggestion?<span class="dlg-tag" style="background:var(--GL);color:var(--GD)">CONSENSUS ✓</span></div></div>
+        </div>
+        <div class="alert al-g"><span>⭐</span><div>Notice: names used, question asked, polite disagreement, and group reached CONSENSUS. That's how you get Band 4.5!</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ PRACTICE ═════════════════════════════ -->
+<div id="sc-practice" class="screen">
+  <div class="pad"><div class="pg-title">Practice 🎤</div><div class="pg-sub">Choose task and topic to begin</div></div>
+  <div class="body-pad">
+    <!-- Practice Home -->
+    <div id="ph-wrap">
+      <div class="tabs">
+        <button class="tab act" id="ptab-a" onclick="setPracTab('A')">🎤 Task A — Individual</button>
+        <button class="tab" id="ptab-b" onclick="setPracTab('B')">👥 Task B — Group</button>
+      </div>
+      <div id="ph-hero-a" class="hero blue"><div class="hc-tag">Task A · Individual Presentation</div><div class="hc-title">Choose a topic, plan PREP,<br>record yourself!</div><div class="hc-pill">⏱️ 2 min prep → 2 min speaking</div></div>
+      <div id="ph-hero-b" class="hero green hidden"><div class="hc-tag">Task B · Group Discussion</div><div class="hc-title">Discuss all 5 points.<br>Reach ONE best suggestion!</div><div class="hc-pill">⏱️ 3 min prep → 10 min discussion</div></div>
+      <div class="sh">Select a Topic</div>
+      <div class="tpills" id="p-pills"></div>
+      <div id="p-topics" style="max-height:340px;overflow-y:auto;padding:2px"></div>
+      <button class="btn btn-p" style="margin-top:11px" onclick="beginPractice()">Start Practice →</button>
+    </div>
+    <!-- Task A Wizard -->
+    <div id="pa-wrap" class="hidden" style="padding:0">
+      <button class="back-btn" onclick="toPracHome()">← Topics</button>
+      <div class="steps" id="pa-steps"></div>
+      <div id="pa-content"></div>
+    </div>
+    <!-- Task B Wizard -->
+    <div id="pb-wrap" class="hidden" style="padding:0">
+      <button class="back-btn" onclick="toPracHome()">← Topics</button>
+      <div class="steps" id="pb-steps"></div>
+      <div id="pb-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ RESULTS ══════════════════════════════ -->
+<div id="sc-results" class="screen">
+  <div class="pad"><div class="pg-title">My Progress 📊</div><div class="pg-sub">Speaking performance dashboard</div></div>
+  <div class="body-pad" id="results-body"></div>
+</div>
+
+<!-- ═══════════════════════ LECTURER ══════════════════════════════ -->
+<div id="sc-lecturer" class="screen">
+  <div class="pad"><div class="pg-title">Lecturer 🏫</div><div class="pg-sub">Class management and analytics</div></div>
+  <div class="body-pad">
+    <div class="tabs">
+      <button class="tab act" id="lc-t1" onclick="lecTab(1)">👥 Students</button>
+      <button class="tab" id="lc-t2" onclick="lecTab(2)">📊 Analytics</button>
+      <button class="tab" id="lc-t3" onclick="lecTab(3)">💡 Strategies</button>
+    </div>
+    <div id="lc1">
+      <div class="card-xs">
+        <div style="font-size:13px;font-weight:900;color:var(--ink);margin-bottom:10px">➕ Add Student Record</div>
+        <input id="l-nm" placeholder="Student name" style="width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;font-family:inherit;font-size:13px;margin-bottom:7px;outline:none;background:var(--bg)"/>
+        <div style="display:flex;gap:7px;margin-bottom:7px">
+          <input id="l-no" placeholder="Reg. No." style="flex:1;border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;font-family:inherit;font-size:13px;outline:none;background:var(--bg)"/>
+          <input id="l-grp" placeholder="Group" style="width:90px;border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;font-family:inherit;font-size:13px;outline:none;background:var(--bg)"/>
+        </div>
+        <div style="display:flex;gap:7px">
+          <select id="l-band" style="flex:1;border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;font-family:inherit;font-size:13px;outline:none;background:var(--bg)"><option value="">Band</option><option>1.0</option><option>2.0</option><option>2.5</option><option>3.0</option><option>3.5</option><option>4.0</option><option>4.5</option><option>5.0</option><option>5+</option></select>
+          <select id="l-weak" style="flex:1;border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;font-family:inherit;font-size:13px;outline:none;background:var(--bg)"><option value="">Weakness</option><option>Task Fulfilment</option><option>Fluency</option><option>Vocabulary</option><option>Accuracy</option><option>Communicative</option><option>Interaction</option></select>
+        </div>
+        <button class="btn btn-p" style="margin-top:9px" onclick="addStudent()">Add Student</button>
+      </div>
+      <div id="l-list"></div>
+      <button class="btn btn-out" style="margin-top:7px" onclick="clearStudents()">Clear All</button>
+    </div>
+    <div id="lc2" class="hidden" id="l-analytics"></div>
+    <div id="lc3" class="hidden">
+      <div class="sh">Evidence-Based Teaching Strategies</div>
+      <div class="strategy str-r"><div class="str-t">🔴 Task Fulfilment — Most Critical</div><div class="str-b">Students speak off-topic. Daily fix: drill PREP in exactly 4 sentences. Give 5 different Task Cards per class. Accept no answer that skips P-R-E-P structure.</div></div>
+      <div class="strategy str-r"><div class="str-t">🔴 Fluency &amp; Coherence</div><div class="str-b">Fillers ("um", "er") and long pauses. Fix: 60-second rapid speech bursts daily. Students record and listen back. Use Think-Pair-Share before every speaking task.</div></div>
+      <div class="strategy str-a"><div class="str-t">🟡 Vocabulary Range</div><div class="str-b">Students repeat the same 50 words. Fix: MUET Word Wall per theme. Require 3 new words per session. Substitution drills: "good" → "beneficial / advantageous / constructive".</div></div>
+      <div class="strategy str-a"><div class="str-t">🟡 Language Accuracy</div><div class="str-b">3 error types for low-proficiency: subject-verb agreement, tense, articles. Run 5-minute weekly grammar sprints. Focus on errors that impede communication first.</div></div>
+      <div class="strategy str-a"><div class="str-t">🟡 Interaction (Task B)</div><div class="str-b">Students speak TO examiner, not EACH OTHER. Fix: Circle seating. Ban speaking without naming another candidate. Reward students who ask questions. 10-minute warm-up discussions every class.</div></div>
+      <div class="strategy str-g"><div class="str-t">🟢 Communicative Ability</div><div class="str-b">Register improves quickly with role-play. Practise "audience shifts" — present to teacher, then peers, then imaginary examiner. Notice how language changes.</div></div>
+      <div class="strategy str-g"><div class="str-t">🟢 Pronunciation</div><div class="str-b">Clarity over accent. Focus on word stress and sentence rhythm. Record and compare week-by-week. Use minimal pairs for 5 minutes before each practice.</div></div>
+      <div class="card" style="margin-top:4px">
+        <div style="font-size:14px;font-weight:900;color:var(--ink);margin-bottom:9px">📅 Weekly Class Plan</div>
+        <div class="info-list">
+          <div class="info-row"><div class="ir-icon" style="background:var(--PL);font-weight:900;color:var(--P)">M</div><div><div class="ir-t">Monday — Vocabulary + Warm-up</div><div class="ir-s">5 new words from MUET Word Wall. Rapid 30-second unprepared speech burst.</div></div></div>
+          <div class="info-row"><div class="ir-icon" style="background:var(--GL);font-weight:900;color:var(--G)">W</div><div><div class="ir-t">Wednesday — PREP Drill</div><div class="ir-s">Each student speaks one full PREP (2 min). Peer feedback using checklist.</div></div></div>
+          <div class="info-row"><div class="ir-icon" style="background:var(--AL);font-weight:900;color:var(--AD)">F</div><div><div class="ir-t">Friday — Full Mock MUET</div><div class="ir-s">Task A + Task B simulation. Record. Review 2 recordings as a class. Identify what worked.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ BOTTOM NAV ══════════════════════════ -->
+<nav id="bnav" style="display:none" role="navigation" aria-label="Main navigation">
+  <button class="bn act" data-sc="home" onclick="goTo('home')" aria-label="Home"><span class="bni" aria-hidden="true">🏠</span>Home</button>
+  <button class="bn" data-sc="learn" onclick="goTo('learn')" aria-label="Learn"><span class="bni" aria-hidden="true">📖</span>Learn</button>
+  <button class="bn" data-sc="practice" onclick="goTo('practice')" aria-label="Practice"><span class="bni" aria-hidden="true">🎤</span>Practice</button>
+  <button class="bn" data-sc="results" onclick="goTo('results')" aria-label="Results"><span class="bni" aria-hidden="true">📊</span>Results</button>
+  <button class="bn" data-sc="lecturer" onclick="goTo('lecturer')" aria-label="Lecturer"><span class="bni" aria-hidden="true">🏫</span>Lecturer</button>
+</nav>
+
+<!-- ═══════════════════════ TOAST ════════════════════════════════ -->
+<div id="toast-container" role="status" aria-live="polite"></div>
+
+<!-- ═══════════════════════ MODAL ════════════════════════════════ -->
+<div id="modal-overlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div id="modal-box">
+    <div id="modal-icon"></div>
+    <div id="modal-title"></div>
+    <div id="modal-msg"></div>
+    <div id="modal-actions"></div>
+  </div>
+</div>
+
+<script>
+// ╔═══════════════════════════════════════════════════════════════╗
+//  DATA — Edit topics, checklists, bands, missions here
+//  All application content is consolidated in this section.
+// ╚═══════════════════════════════════════════════════════════════╝
+
+// ── TOPICS — 30 Real MUET Questions 2021–2025 ──────────────────
+const T=[
+{id:1,th:"Technology",em:"💻",cl:"#2563EB",ti:"Technology in Daily Life",yr:"2021 S1",A:{si:"Technology helps us in many ways in our daily lives.",ca:{A:"Talk about how technology helps us do housework.",B:"Talk about how technology helps us make friends.",C:"Talk about how technology helps us shop online.",D:"Talk about how technology helps us find entertainment."}},B:{si:"Technology is an important tool in education today.",q:"What are the benefits of using technology in education?",pt:{1:"quick access to information",2:"economical learning",3:"independent learning",4:"more interesting lessons",5:"develop new skills"}}},
+{id:2,th:"Technology",em:"💻",cl:"#2563EB",ti:"Online Teaching and Learning",yr:"2021 S2",A:{si:"Smartphones are useful tools for learning in today's digital world.",ca:{A:"Talk about sharing notes with friends using smartphones.",B:"Talk about searching for information on the internet.",C:"Talk about doing online discussions with classmates.",D:"Talk about attending online classes via smartphone."}},B:{si:"Online teaching and learning has become common today but comes with challenges.",q:"What are the issues related to online teaching and learning?",pt:{1:"internet connection",2:"technical issues",3:"quality of learning",4:"learning environment",5:"cost"}}},
+{id:3,th:"Technology",em:"💻",cl:"#2563EB",ti:"Responsible Internet Use",yr:"2022 S1",A:{si:"People today spend a lot of time on their smartphones for many purposes.",ca:{A:"Talk about chatting online with friends and family.",B:"Talk about getting the latest news and information.",C:"Talk about using smartphones for studies.",D:"Talk about buying and selling things online."}},B:{si:"It is important for people to use the internet responsibly and safely.",q:"How can people be responsible when using the internet?",pt:{1:"respect others online",2:"protect personal information",3:"avoid sharing fake news",4:"avoid internet addiction",5:"respect copyright"}}},
+{id:4,th:"Technology",em:"💻",cl:"#2563EB",ti:"Protection from Online Scams",yr:"2024 S1",A:{si:"Buying goods online is now very common. Being careful is important.",ca:{A:"Talk about comparing prices before buying.",B:"Talk about comparing product quality and descriptions.",C:"Talk about reading customer reviews.",D:"Talk about comparing customer service."}},B:{si:"Many people have become victims of online scams causing financial losses.",q:"How can people be protected from being scammed online?",pt:{1:"know your consumer rights",2:"enforce stricter laws",3:"set up complaint centres",4:"maintain scammer database",5:"run awareness campaigns"}}},
+{id:5,th:"Technology",em:"💻",cl:"#2563EB",ti:"Safe Use of Social Media",yr:"2024 S2",A:{si:"Many young people spend too much time on social media.",ca:{A:"Talk about playing outdoor games with friends.",B:"Talk about going on camping trips.",C:"Talk about visiting local places of interest.",D:"Talk about helping a charity organisation."}},B:{si:"There is growing concern about social media's negative impact on younger generations.",q:"How can we ensure the safe use of social media?",pt:{1:"limit screen time",2:"digital literacy education",3:"block harmful sites",4:"privacy settings",5:"parental guidance"}}},
+{id:6,th:"Environment",em:"🌿",cl:"#059669",ti:"Dealing with Forest Fires",yr:"2021 S1",A:{si:"Haze happens almost every year and causes serious health problems.",ca:{A:"Talk about wearing face masks when outdoors.",B:"Talk about drinking lots of water to stay hydrated.",C:"Talk about staying indoors during severe haze.",D:"Talk about seeing a doctor if symptoms become serious."}},B:{si:"Forest fires cause serious air pollution across the region.",q:"How can countries deal with forest fires effectively?",pt:{1:"international cooperation",2:"public education",3:"better firefighting equipment",4:"trained rescue teams",5:"stricter laws"}}},
+{id:7,th:"Environment",em:"🌿",cl:"#059669",ti:"Protecting Our Environment",yr:"2022 S3",A:{si:"There are many important ways we can care for our environment daily.",ca:{A:"Talk about reducing paper use.",B:"Talk about reducing plastic bags when shopping.",C:"Talk about reducing fuel use by taking public transport.",D:"Talk about reducing electricity use at home."}},B:{si:"Our environment is being polluted and damaged every day by human activities.",q:"How can we protect our environment effectively?",pt:{1:"reduce water pollution",2:"enforce stricter rules",3:"run awareness campaigns",4:"control air pollution",5:"create nature reserves"}}},
+{id:8,th:"Environment",em:"🌿",cl:"#059669",ti:"Managing Waste",yr:"2021 S1",A:{si:"There are many important ways to care for the environment.",ca:{A:"Talk about reducing the use of paper.",B:"Talk about reducing the use of plastic bags.",C:"Talk about reducing the use of fuel.",D:"Talk about reducing the use of electricity."}},B:{si:"There is growing concern about how waste is managed in Malaysia.",q:"How can the government manage waste effectively?",pt:{1:"invest in waste technologies",2:"impose fines on polluters",3:"expand recycling centres",4:"stop illegal dumping",5:"enforce stricter laws"}}},
+{id:9,th:"Health",em:"❤️",cl:"#DC2626",ti:"Benefits of Playing Sports",yr:"2021 S1",A:{si:"Students should take part in sports and physical activities regularly.",ca:{A:"Talk about learning teamwork through sports.",B:"Talk about keeping fit and maintaining good health.",C:"Talk about reducing stress through physical activity.",D:"Talk about meeting new people through sports."}},B:{si:"The standard of sports needs to be improved to win international medals.",q:"How can the standard of sports be improved in a country?",pt:{1:"upgrade sports facilities",2:"identify young talents early",3:"improve coaching standards",4:"organise more sporting events",5:"offer rewards and incentives"}}},
+{id:10,th:"Health",em:"❤️",cl:"#DC2626",ti:"Creating a Fitness Culture",yr:"2021 S2",A:{si:"Many people go to the gym regularly to stay fit and healthy.",ca:{A:"Talk about exercising to lose weight.",B:"Talk about having a comfortable gym facility.",C:"Talk about convenient gym operating hours.",D:"Talk about using exercise to reduce stress."}},B:{si:"Many Malaysians do not exercise regularly. A fitness culture must be developed.",q:"What are ways to create a fitness culture in Malaysia?",pt:{1:"workplace exercise programmes",2:"school physical education",3:"fitness competitions",4:"family workout programmes",5:"online fitness communities"}}},
+{id:11,th:"Health",em:"❤️",cl:"#DC2626",ti:"Mental Health Awareness",yr:"2021 S2",A:{si:"Happiness is very important in a family.",ca:{A:"Talk about helping family members with housework.",B:"Talk about cooking meals for your family.",C:"Talk about buying gifts for your family.",D:"Talk about spending quality time with your family."}},B:{si:"More people today face mental health issues. Society must support mental health.",q:"Who plays a role in caring for our mental health?",pt:{1:"communities",2:"family members",3:"friends",4:"therapists",5:"teachers"}}},
+{id:12,th:"Health",em:"❤️",cl:"#DC2626",ti:"Preparing for Pandemics",yr:"2023 S3",A:{si:"Everyone wants to be healthy and not fall sick.",ca:{A:"Talk about exercising regularly.",B:"Talk about getting enough rest and quality sleep.",C:"Talk about practising clean and hygienic habits.",D:"Talk about going for regular medical check-ups."}},B:{si:"Countries must be prepared to deal with public health emergencies.",q:"How can countries be prepared to deal with pandemics?",pt:{1:"up-to-date information systems",2:"adequate medical facilities",3:"stable food supply",4:"trained medical manpower",5:"compulsory vaccination"}}},
+{id:13,th:"Education",em:"📚",cl:"#7C3AED",ti:"Teachers and Nation Building",yr:"2021 S1",A:{si:"Your class would like to celebrate Teacher's Day.",ca:{A:"Talk about buying meaningful gifts for your teacher.",B:"Talk about making a special video tribute.",C:"Talk about performing a cultural show.",D:"Talk about making a personalised card."}},B:{si:"Teachers play an important role in developing a country.",q:"What are the contributions of teachers in developing a country?",pt:{1:"impart knowledge",2:"groom future leaders",3:"instil discipline and values",4:"serve as role models",5:"develop students' talents"}}},
+{id:14,th:"Education",em:"📚",cl:"#7C3AED",ti:"Challenges of Studying Abroad",yr:"2021 S2",A:{si:"Students prepare for exams in different ways. Good preparation is key.",ca:{A:"Talk about studying in groups.",B:"Talk about studying in a library.",C:"Talk about attending extra classes.",D:"Talk about doing past year questions."}},B:{si:"Studying abroad offers great opportunities but can be very challenging.",q:"Why is studying abroad challenging for Malaysian students?",pt:{1:"feeling homesick",2:"cultural differences",3:"high cost of living",4:"language problems",5:"lack of support"}}},
+{id:15,th:"Education",em:"📚",cl:"#7C3AED",ti:"Alternative Ways to Assess Students",yr:"2022 S1",A:{si:"College students have to sit for examinations. Preparing well is important.",ca:{A:"Talk about studying regularly throughout the semester.",B:"Talk about making your own revision notes.",C:"Talk about joining group discussions.",D:"Talk about doing sample questions and past papers."}},B:{si:"Too much emphasis is placed on final examinations in universities.",q:"What are other ways to assess university and college students?",pt:{1:"in-class quizzes",2:"presentations",3:"fieldwork",4:"group projects",5:"practical training"}}},
+{id:16,th:"Career",em:"💼",cl:"#D97706",ti:"Graduate Unemployment",yr:"2021 S1",A:{si:"Students have to think carefully about what to do after secondary school.",ca:{A:"Talk about going to a university or college.",B:"Talk about getting a full-time or part-time job.",C:"Talk about learning a vocational skill.",D:"Talk about other personal plans after school."}},B:{si:"Unemployment among university graduates is a serious problem in Malaysia.",q:"Why do university graduates have difficulty finding employment?",pt:{1:"weak personality and attitude",2:"expectations too high",3:"poor economic conditions",4:"too many graduates",5:"poor communication skills"}}},
+{id:17,th:"Career",em:"💼",cl:"#D97706",ti:"Career Guidance at University",yr:"2022 S3",A:{si:"Everyone has different reasons when choosing a job or career.",ca:{A:"Talk about choosing a job based on location.",B:"Talk about choosing a job because of salary.",C:"Talk about choosing a job because of working hours.",D:"Talk about choosing a job because of facilities."}},B:{si:"Universities can guide students towards better career decisions.",q:"How can universities provide better career guidance for students?",pt:{1:"set up relevant clubs",2:"professional development courses",3:"talks by professionals",4:"career guidance advisers",5:"internship programmes"}}},
+{id:18,th:"Career",em:"💼",cl:"#D97706",ti:"Part-time Work for Youth",yr:"2023 S2",A:{si:"There are many part-time jobs that young people can do.",ca:{A:"Talk about working at a fast food restaurant.",B:"Talk about working as a shop assistant.",C:"Talk about doing food delivery.",D:"Talk about being a part-time tuition teacher."}},B:{si:"Working part-time while studying offers many valuable benefits.",q:"Why should young people be encouraged to work part-time?",pt:{1:"learn money management",2:"develop independence",3:"build social skills",4:"self-discovery",5:"develop responsibility"}}},
+{id:19,th:"Career",em:"💼",cl:"#D97706",ti:"Skills Graduates Need",yr:"2024 S1",A:{si:"You are interested in learning a new practical skill.",ca:{A:"Talk about learning from experienced family members.",B:"Talk about working part-time for experience.",C:"Talk about watching tutorial videos online.",D:"Talk about attending formal classes."}},B:{si:"Graduates need more than qualifications to succeed in the job market.",q:"What skills do graduates need to get employed in Malaysia?",pt:{1:"information technology",2:"problem-solving",3:"language proficiency",4:"organisational skills",5:"teamwork"}}},
+{id:20,th:"Society",em:"🤝",cl:"#0891B2",ti:"Caring for Senior Citizens",yr:"2021 S3",A:{si:"Children should help their parents at home in many ways.",ca:{A:"Talk about helping out with household chores.",B:"Talk about taking care of younger siblings.",C:"Talk about caring for parents when they are sick.",D:"Talk about spending money wisely."}},B:{si:"Society must work together to ensure the well-being of senior citizens.",q:"What are ways to care for senior citizens?",pt:{1:"special discounts",2:"monthly allowance",3:"recreational facilities",4:"nursing homes",5:"free healthcare"}}},
+{id:21,th:"Society",em:"🤝",cl:"#0891B2",ti:"Improving Road Safety",yr:"2022 S1",A:{si:"There has been an increase in road accidents in Malaysia.",ca:{A:"Talk about wearing a helmet.",B:"Talk about crossing at pedestrian crossings.",C:"Talk about not wearing dark clothes at night.",D:"Talk about not using your phone while driving."}},B:{si:"Road accidents cause many deaths and injuries each year in Malaysia.",q:"How can the government improve road safety?",pt:{1:"increase fines",2:"install better road signs",3:"enforce speed limits",4:"review driving age",5:"road safety education"}}},
+{id:22,th:"Society",em:"🤝",cl:"#0891B2",ti:"Attracting Tourists to Malaysia",yr:"2023 S1",A:{si:"A group of friends is planning a holiday trip.",ca:{A:"Talk about staying at a hotel.",B:"Talk about staying at a relative's house.",C:"Talk about staying at a homestay.",D:"Talk about staying at a campsite."}},B:{si:"Tourism contributes significantly to Malaysia's national economy.",q:"How can Malaysia attract more tourists?",pt:{1:"effective publicity",2:"qualified tourist guides",3:"improve infrastructure",4:"update websites",5:"upgrade facilities"}}},
+{id:23,th:"Society",em:"🤝",cl:"#0891B2",ti:"Promoting Malaysian Cuisine",yr:"2024 S2",A:{si:"Food is an important part of Malaysian culture.",ca:{A:"Talk about Malaysian food being affordable.",B:"Talk about Malaysian food having great flavour.",C:"Talk about Malaysian food having wide variety.",D:"Talk about Malaysian food being easily available."}},B:{si:"Promoting Malaysian cuisine globally can boost tourism and the economy.",q:"How can Malaysian cuisine be promoted around the world?",pt:{1:"feature in food magazines",2:"celebrity chefs",3:"leverage social media",4:"food festivals",5:"cooking competitions"}}},
+{id:24,th:"Finance",em:"💰",cl:"#EA580C",ti:"Being a Smart Consumer",yr:"2021 S1",A:{si:"You have been given RM200 as a gift.",ca:{A:"Talk about buying clothes that you need.",B:"Talk about buying food and groceries.",C:"Talk about buying an internet or data plan.",D:"Talk about buying stationery or study materials."}},B:{si:"With rising cost of living, consumers must be smarter about spending.",q:"How can a person become a smart consumer?",pt:{1:"compare prices",2:"know consumer rights",3:"read labels",4:"make a shopping list",5:"buy during sales"}}},
+{id:25,th:"Finance",em:"💰",cl:"#EA580C",ti:"Managing Rising Cost of Living",yr:"2023 S3",A:{si:"The cost of living has gone up. Young people can help their families.",ca:{A:"Talk about buying only what is needed.",B:"Talk about doing basic repairs yourself.",C:"Talk about getting part-time jobs.",D:"Talk about cooking meals at home."}},B:{si:"Inflation has affected the poor the most. Society and government must help.",q:"How can the poor be helped to cope with inflation?",pt:{1:"skills training",2:"financial assistance",3:"free transport",4:"control essential prices",5:"low-cost housing"}}},
+{id:26,th:"Personal",em:"🌟",cl:"#7C3AED",ti:"Growing Through Challenges",yr:"2025 S1",A:{si:"Life is full of challenges and difficulties that can cause stress.",ca:{A:"Talk about discussing problems with family members.",B:"Talk about going out with friends.",C:"Talk about doing exercise to relieve stress.",D:"Talk about taking short breaks from studying."}},B:{si:"Facing challenges can be great opportunities for personal growth.",q:"How can people become better after facing challenges in life?",pt:{1:"gain motivation",2:"discover potential",3:"learning opportunities",4:"build character",5:"increase confidence"}}},
+{id:27,th:"Personal",em:"🌟",cl:"#7C3AED",ti:"Good Role Models for Youth",yr:"2021 S3",A:{si:"Clubs and societies at school offer many advantages to members.",ca:{A:"Talk about improving social and communication skills.",B:"Talk about gaining new experiences.",C:"Talk about improving physical fitness.",D:"Talk about building confidence and leadership."}},B:{si:"Young people need positive role models to guide and inspire them.",q:"Who can be a good role model for young people today?",pt:{1:"a parent",2:"a close friend",3:"a leader",4:"a celebrity",5:"a teacher"}}},
+{id:28,th:"Personal",em:"🌟",cl:"#7C3AED",ti:"Good Leaders for the Country",yr:"2025 S1",A:{si:"Your college is holding student elections. Good qualities are needed.",ca:{A:"Talk about being good in studies.",B:"Talk about being friendly and approachable.",C:"Talk about being well-organised.",D:"Talk about having good discipline."}},B:{si:"Every country needs good leaders to ensure its growth and harmony.",q:"Why does a country need good leaders?",pt:{1:"make good policies",2:"inspire people",3:"maintain peace",4:"grow the economy",5:"build trust"}}},
+{id:29,th:"Health",em:"❤️",cl:"#DC2626",ti:"Mental Health at University",yr:"2023 S1",A:{si:"Being a first-year student can be both exciting and challenging.",ca:{A:"Talk about finding new friends.",B:"Talk about joining university clubs and activities.",C:"Talk about exploring the campus.",D:"Talk about meeting your lecturers."}},B:{si:"Mental health among university students is a growing concern.",q:"Who plays a role in promoting mental health among university students?",pt:{1:"peers",2:"parents",3:"medical professionals",4:"lecturers",5:"university administrators"}}},
+{id:30,th:"Education",em:"📚",cl:"#7C3AED",ti:"Technology Benefits in Education",yr:"2023 S2",A:{si:"Students need to be well-prepared to attend online classes.",ca:{A:"Talk about having a suitable place to study.",B:"Talk about having a good computer or device.",C:"Talk about having a fast internet connection.",D:"Talk about having proper notes and materials."}},B:{si:"Technology has revolutionised education and how knowledge is delivered.",q:"What are the benefits of using technology in education?",pt:{1:"access to information",2:"cost effective",3:"independent learning",4:"interactive learning",5:"convenient"}}}
+];
+
+// ── BEHAVIORAL CHECKLISTS — What examiners observe ─────────────
+// ═══════════════════════════════════════════════════════════════
+const CL_A=[
+  {id:'greet',  crit:'Communicative Ability', beh:'I greeted the examiner and stated my candidate letter.', eg:'e.g. "Good morning. I am Candidate B."'},
+  {id:'point',  crit:'Task Fulfilment',        beh:'I stated my assigned point clearly in my first sentence.', eg:'e.g. "I strongly believe that [my point] is the most important because…"'},
+  {id:'reason', crit:'Task Fulfilment',        beh:'I gave a clear reason WHY my point matters.', eg:'e.g. "This is because… / The main reason is that…"'},
+  {id:'example',crit:'Task Fulfilment',        beh:'I gave a specific Malaysian example or evidence.', eg:'e.g. "For example, in Malaysia… / According to studies in Malaysia…"'},
+  {id:'restate',crit:'Fluency & Coherence',    beh:'I restated my point in a strong conclusion and said "Thank you."', eg:'e.g. "Therefore, I strongly believe that [point]. Thank you."'},
+  {id:'marker', crit:'Fluency & Coherence',    beh:'I used at least one discourse marker.', eg:'e.g. "Furthermore… / However… / Therefore… / In addition…"'},
+  {id:'duration',crit:'Fluency',               beh:'I spoke close to 2 minutes (check: 100+ words in transcript).', eg:'Aim: 150–200 words. Did not stop early or run out of things to say.'},
+  {id:'vocab',  crit:'Vocabulary Range',       beh:'I used varied words instead of only "good", "bad", or "important".', eg:'e.g. "beneficial", "effective", "crucial", "significant"'}
+];
+const CL_B=[
+  {id:'contribute',crit:'Task Fulfilment',   beh:'I shared my idea with a clear reason.', eg:'e.g. "I think [point] is most effective because…"'},
+  {id:'example', crit:'Task Fulfilment',     beh:'I supported my idea with an example.', eg:'e.g. "For example, in Malaysia… / A study shows…"'},
+  {id:'named',   crit:'Interaction',         beh:'I referred to at least one candidate by name.', eg:'e.g. "I agree with Candidate A… / Candidate B, what do you think?"'},
+  {id:'disagree',crit:'Interaction',         beh:"I politely disagreed with someone's idea at least once.", eg:"e.g. 'I see your point, however I believe… / That may be true, but…'"},
+  {id:'question',crit:'Interaction',         beh:'I asked at least one question to another candidate.', eg:'e.g. "What do you think, Candidate C?" / "Could you clarify…?"'},
+  {id:'marker',  crit:'Fluency & Coherence', beh:'I used interaction phrases (e.g. "I would like to add…" / "Building on…").', eg:'e.g. "Furthermore… / I would like to add that… / In addition…"'},
+  {id:'turns',   crit:'Communicative Ability',beh:'I spoke at least 3 times during the discussion.', eg:'Not just once — contributed multiple turns throughout the discussion.'},
+  {id:'consensus',crit:'Task Fulfilment',    beh:'I helped the group reach a final consensus decision.', eg:'e.g. "Shall we agree that [X] is the best suggestion?" or supported the closing.'}
+];
+const PT_CL=['#2563EB','#059669','#7C3AED','#D97706','#DC2626'];
+const PT_BG=['#EFF6FF','#ECFDF5','#EDE9FE','#FFFBEB','#FEF2F2'];
+const THEMES=['All','Technology','Environment','Health','Education','Career','Society','Finance','Personal'];
+const THEME_CL={Technology:'#2563EB',Environment:'#059669',Health:'#DC2626',Education:'#7C3AED',Career:'#D97706',Society:'#0891B2',Finance:'#EA580C',Personal:'#7C3AED'};
+
+// ═══════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════
+let profile   = JSON.parse(localStorage.getItem('msp_profile')||'null');
+let progress  = JSON.parse(localStorage.getItem('msp_progress')||'{}');
+let sessions  = JSON.parse(localStorage.getItem('msp_sessions')||'[]');
+let students  = JSON.parse(localStorage.getItem('msp_students')||'[]');
+
+let cur = {
+  screen:'splash', task:'A', topicId:null, candRole:'A', selPt:null,
+  stepA:1, stepB:1,
+  timerInt:null, timeLeft:0, totalSecs:0, phase:'',
+  checkedA:{}, checkedB:{},
+  transcript:'', transcriptB:'',
+  recOn:false, recognition:null,
+  filterTheme:'All',
+  splashCoach:'maya',
+  warmupDone:false
+};
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+function init(){
+  document.getElementById('r-ai').addEventListener('change', function(){
+    document.getElementById('gem-wrap').classList.toggle('hidden', this.value!=='gemini');
+  });
+  if(profile){
+    const splash=document.getElementById('sc-splash');
+    splash.classList.remove('active');
+    splash.style.transform='translateX(-105%)';
+    document.getElementById('bnav').style.display='grid';
+    renderBands();
+    goTo('home');
+  }
+}
+
+function saveProfile(){
+  const n=document.getElementById('r-name').value.trim();
+  const no=document.getElementById('r-no').value.trim();
+  if(!n||!no){showToast('Please enter your Name and Registration Number.','warn');return;}
+  profile={name:n,no,cls:document.getElementById('r-cls').value.trim(),band:document.getElementById('r-band').value,aiMode:document.getElementById('r-ai').value,gemKey:document.getElementById('r-gem').value.trim(),coach:cur.splashCoach||'maya',weakSkill:document.getElementById('r-weak').value};
+  localStorage.setItem('msp_profile',JSON.stringify(profile));
+  // update streak
+  const today=new Date().toDateString();
+  if(!profile.lastVisit||profile.lastVisit!==today){
+    profile.streak=(profile.streak||0)+(profile.lastVisit===new Date(Date.now()-86400000).toDateString()?1:1);
+    profile.lastVisit=today;
+    localStorage.setItem('msp_profile',JSON.stringify(profile));
+  }
+  const splash=document.getElementById('sc-splash');
+  splash.classList.remove('active');
+  splash.style.transform='translateX(-105%)';
+  document.getElementById('bnav').style.display='grid';
+  renderBands();
+  goTo('home');
+}
+
+const COACHES={
+  maya:{av:'👩‍🏫',name:'Coach Maya',msgs:["Hi! I will help you speak with confidence. Let us start today!","You are doing great! Every practice brings you closer to your goal.","Remember: one clear PREP structure beats five rushed ideas.","Speak slowly, think clearly, and trust yourself!"]},
+  zara:{av:'👩‍💼',name:'Examiner Zara',msgs:["Good. Let us focus on exam standards. Be precise and complete.","Your PREP structure must be clear. Examiners notice every gap.","Use formal vocabulary. Avoid filler words like 'uh' and 'er'.","Time is critical. Do not waste your 2 minutes — plan well."]},
+  adam:{av:'👨‍💻',name:'Coach Adam',msgs:["Let us beat that hesitation! Speak first, then refine.","Fluency comes from practice. Record yourself daily.","Do not stop mid-sentence. Keep talking even if imperfect.","Use linking words to keep ideas flowing naturally."]}
+};
+
+function selectSplashCoach(id){
+  cur.splashCoach=id;
+  ['maya','zara','adam'].forEach(c=>{
+    const el=document.getElementById('sc-'+c);
+    if(!el)return;
+    const sel=c===id;
+    el.style.borderColor=sel?'rgba(255,255,255,.6)':'rgba(255,255,255,.15)';
+    el.style.background=sel?'rgba(255,255,255,.2)':'rgba(255,255,255,.07)';
+  });
+  const coach=COACHES[id];
+  const msg=document.getElementById('splash-coach-msg');
+  if(msg&&coach) msg.textContent=`"${coach.msgs[0]}" — ${coach.name}`;
+}
+
+function editProfile(){
+  showModal({icon:'✏️',title:'Edit Profile',msg:'You can update your name, class, and settings.',confirmLabel:'Edit',cancelLabel:'Cancel',onConfirm:()=>{
+    const s=document.getElementById('sc-splash');
+    document.querySelectorAll('.screen').forEach(sc=>sc.classList.remove('active'));
+    s.classList.add('active');
+    s.style.transform='none';
+    document.getElementById('r-name').value=profile.name||'';
+    document.getElementById('r-no').value=profile.no||'';
+    document.getElementById('r-cls').value=profile.cls||'';
+    document.getElementById('r-band').value=profile.band||'i';
+    document.getElementById('r-ai').value=profile.aiMode||'offline';
+    document.getElementById('gem-wrap').classList.toggle('hidden',profile.aiMode!=='gemini');
+    if(profile.gemKey) document.getElementById('r-gem').value=profile.gemKey;
+    if(profile.weakSkill) document.getElementById('r-weak').value=profile.weakSkill;
+    cur.splashCoach=profile.coach||'maya';
+    selectSplashCoach(cur.splashCoach);
+  }});
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+function goTo(name){
+  const map={home:'sc-home',learn:'sc-learn',practice:'sc-practice',results:'sc-results',lecturer:'sc-lecturer'};
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(map[name]);
+  if(el){el.classList.add('active');el.scrollTop=0;}
+  document.querySelectorAll('.bn').forEach(b=>b.classList.toggle('act',b.dataset.sc===name));
+  cur.screen=name;
+  if(name==='home')    renderHome();
+  if(name==='practice')renderPracHome();
+  if(name==='results') renderResults();
+  if(name==='lecturer')renderLecStudents();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  HOME
+// ═══════════════════════════════════════════════════════════════
+function renderHome(){
+  if(!profile) return;
+  const coach=COACHES[profile.coach||'maya'];
+  // Streak logic
+  const today=new Date().toDateString();
+  if(profile.lastVisit!==today){
+    const yesterday=new Date(Date.now()-86400000).toDateString();
+    profile.streak=profile.lastVisit===yesterday?(profile.streak||0)+1:1;
+    profile.lastVisit=today;
+    localStorage.setItem('msp_profile',JSON.stringify(profile));
+  }
+  // Coach card
+  const av=document.getElementById('h-coach-av');
+  const cn=document.getElementById('h-coach-name');
+  const cm=document.getElementById('h-coach-msg');
+  const pm=document.getElementById('h-pmeta');
+  if(av) av.textContent=coach.av;
+  if(cn) cn.textContent=coach.name;
+  if(cm){const msgIdx=sessions.length%coach.msgs.length;cm.textContent='"'+coach.msgs[msgIdx]+'"';}
+  if(pm) pm.textContent=(profile.no||'')+(profile.cls?' · '+profile.cls:'');
+  document.getElementById('h-name').textContent='Hello, '+profile.name.split(' ')[0]+' 👋';
+  document.getElementById('h-meta').textContent='MUET SmartSpeaking · MPM 800';
+  // Mission card
+  renderMission();
+  // Readiness map
+  renderReadinessMap();
+}
+
+const MISSIONS=[
+  {title:'Practise 1 Task A question',time:'2 minutes',focus:'Give a specific Malaysian example',task:'practice'},
+  {title:'Learn the PREP structure',time:'5 minutes',focus:'Memorise Point → Reason → Example → Restate',task:'learn'},
+  {title:'Practise Task B discussion',time:'10 minutes',focus:'Use candidate names + reach consensus',task:'practice'},
+  {title:'Review your Band Readiness',time:'3 minutes',focus:'Identify which behaviours to improve',task:'results'},
+  {title:'Master 3 discourse markers',time:'5 minutes',focus:"Practise: 'Furthermore', 'However', 'Therefore'",task:'learn'},
+  {title:'Record a full PREP answer',time:'2 minutes',focus:'Speak 150–200 words without stopping',task:'practice'},
+  {title:'Study the Phrase Bank',time:'5 minutes',focus:'Copy 3 phrases you have never used before',task:'learn'},
+];
+
+function renderMission(){
+  const dayIdx=new Date().getDate()%MISSIONS.length;
+  const m=MISSIONS[dayIdx];
+  const el=document.getElementById('mc-title');
+  const te=document.getElementById('mc-time');
+  const fe=document.getElementById('mc-focus');
+  const se=document.getElementById('mc-streak');
+  if(el) el.textContent=m.title;
+  if(te) te.textContent=m.time;
+  if(fe) fe.textContent='Focus: '+m.focus;
+  if(se) se.textContent='🔥 '+(profile.streak||1)+'-day streak';
+  // Make mission card clickable to navigate
+  const mc=document.getElementById('h-mission');
+  if(mc) mc.onclick=()=>goTo(m.task);
+  if(mc) mc.style.cursor='pointer';
+}
+
+function renderReadinessMap(){
+  const el=document.getElementById('readiness-map');
+  if(!el) return;
+  const avgBand=sessions.length?(sessions.map(s=>parseFloat(s.band)||0).filter(Boolean).reduce((a,b)=>a+b,0)/sessions.length):0;
+  const levels=[
+    {band:'3.0',label:'Basic Response',icon:'🌱',desc:'State your point. Give one reason. Use PREP opening.',color:'var(--AD)',req:0},
+    {band:'3.5',label:'Developed Response',icon:'📈',desc:'Full PREP with a clear Malaysian example. Speak 100+ words.',color:'var(--A)',req:2},
+    {band:'4.0',label:'Clear & Coherent',icon:'✨',desc:'Discourse markers. Varied vocabulary. No long pauses.',color:'#2563EB',req:4},
+    {band:'4.5',label:'Confident Interaction',icon:'🤝',desc:'Task B: use names, ask questions, push for consensus.',color:'var(--G)',req:6},
+    {band:'5.0',label:'Fluent & Precise',icon:'🏆',desc:'Natural flow, idiomatic expressions, near-zero errors.',color:'var(--GD)',req:8},
+  ];
+  el.innerHTML=`<div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:9px">Your band average: <strong style="color:var(--P)">${avgBand?avgBand.toFixed(1):'Not yet'}</strong></div>`+
+  levels.map(lv=>{
+    const lv_n=parseFloat(lv.band);
+    const state=avgBand>=lv_n?'done':avgBand>=(lv_n-0.5)?'active':'locked';
+    const badge=state==='done'?'✅ Achieved':state==='active'?'🔄 In Progress':'🔒 Locked';
+    const badgeColor=state==='done'?'var(--GD)':state==='active'?'var(--P)':'var(--muted)';
+    const badgeBg=state==='done'?'var(--GL)':state==='active'?'var(--PL)':'var(--border)';
+    return `<div class="rm-step ${state}">
+      <div class="rm-icon" style="background:${state==='locked'?'var(--border)':lv.color+'22'}">${lv.icon}</div>
+      <div style="flex:1">
+        <div class="rm-band" style="color:${state==='locked'?'var(--muted)':lv.color}">Band ${lv.band} — ${lv.label}</div>
+        <div class="rm-desc">${lv.desc}</div>
+      </div>
+      <div class="rm-badge" style="color:${badgeColor};background:${badgeBg}">${badge}</div>
+    </div>`;
+  }).join('');
+}
+
+function homeTab(id){
+  // Apply specific color to each home tab
+  const tabColors={
+    overview:'linear-gradient(135deg,#2F6BFF,#6C3BFF)',
+    format:'linear-gradient(135deg,#46C6AB,#24B69B)',
+    bands:'linear-gradient(135deg,#F4D53F,#e6c800)',
+    readiness:'linear-gradient(135deg,#FF8E53,#FF6B5E)'
+  };
+  document.querySelectorAll('#sc-home .tab').forEach(t=>{
+    t.style.background='transparent';t.style.color='var(--P)';t.classList.remove('act');
+  });
+  const activeTab=document.querySelector('#sc-home .htab-'+id);
+  if(activeTab){activeTab.style.background=tabColors[id];activeTab.style.color=id==='bands'?'#171133':'#fff';activeTab.classList.add('act');}
+  ['overview','format','bands','readiness'].forEach(x=>document.getElementById('ht-'+x).classList.toggle('hidden',x!==id));
+  if(id==='readiness') renderReadinessMap();
+}
+const BANDS=[{b:'5+',sc:'331–360',ce:'C1+'},{b:'5.0',sc:'294–330',ce:'C1'},{b:'4.5',sc:'258–293',ce:'B2'},{b:'4.0',sc:'211–257',ce:'B2'},{b:'3.5',sc:'164–210',ce:'B1'},{b:'3.0',sc:'123–163',ce:'B1'},{b:'2.5',sc:'82–122',ce:'A2'},{b:'2.0',sc:'36–81',ce:'A2'},{b:'1.0',sc:'1–35',ce:'A1'}];
+// ── BAND SCORE COLOURS ─────────────────────────────────────────
+const BAND_COLS={'5+':'#DC2626','5.0':'#DC2626','4.5':'#2563EB','4.0':'#2563EB','3.5':'#D97706','3.0':'#D97706','2.5':'#EA580C','2.0':'#EA580C','1.0':'#94A3B8'};
+// ── BAND DESCRIPTIONS ──────────────────────────────────────────
+const BAND_DESC={'5+':'Fluent, precise, near-native. Uses idiomatic expressions effortlessly.','5.0':'Excellent. Formulates ideas with precision. Very active in discussions.','4.5':'Above average. Interacts spontaneously. Suitable for university.','4.0':'Good. Can explain viewpoints. Makes few errors.','3.5':'Average. Handles most situations. Gives brief reasons.','3.0':'Developing. Understands and responds on familiar topics.','2.5':'Basic. Simple communication on routine tasks.','2.0':'Needs improvement. Limited to simple phrases.','1.0':'Keep practising! Start PREP basics daily.'};
+
+// ╔═══════════════════════════════════════════════════════════════╗
+//  APPLICATION — Navigation, rendering, state management below
+// ╚═══════════════════════════════════════════════════════════════╝
+function renderBands(){
+  const el=document.getElementById('bands-list');
+  if(!el) return;
+  el.innerHTML=BANDS.map(b=>`<div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:34px;height:34px;border-radius:9px;background:${BAND_COLS[b.b]};color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0">${b.b}</div><div><div style="font-size:12px;font-weight:800;color:var(--ink)">${b.ce} · ${b.sc}</div><div style="font-size:11px;color:var(--muted);margin-top:1px;line-height:1.4">${BAND_DESC[b.b]}</div></div></div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  LEARN
+// ═══════════════════════════════════════════════════════════════
+function learnTab(t){
+  document.getElementById('la-wrap').classList.toggle('hidden',t!=='a');
+  document.getElementById('lb-wrap').classList.toggle('hidden',t!=='b');
+  document.getElementById('ltab-a').classList.toggle('act',t==='a');
+  document.getElementById('ltab-b').classList.toggle('act',t==='b');
+}
+function learnATab(n){
+  [1,2,3].forEach(i=>{document.getElementById('la'+i).classList.toggle('hidden',i!==n);document.getElementById('la-t'+i).classList.toggle('act',i===n);});
+}
+function learnBTab(n){
+  [1,2,3].forEach(i=>{document.getElementById('lb'+i).classList.toggle('hidden',i!==n);document.getElementById('lb-t'+i).classList.toggle('act',i===n);});
+}
+function copyPhrase(el){
+  navigator.clipboard?.writeText(el.textContent).catch(()=>{});
+  el.classList.add('copied');
+  showToast('Phrase copied! ✂️','success',1600);
+  setTimeout(()=>el.classList.remove('copied'),650);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PRACTICE HOME
+// ═══════════════════════════════════════════════════════════════
+function renderPracHome(){
+  document.getElementById('ph-wrap').classList.remove('hidden');
+  document.getElementById('pa-wrap').classList.add('hidden');
+  document.getElementById('pb-wrap').classList.add('hidden');
+  renderPills();
+  renderTopics();
+}
+function toPracHome(){stopTimer();stopRec();renderPracHome();}
+
+function setPracTab(t){
+  cur.task=t;
+  document.getElementById('ptab-a').classList.toggle('act',t==='A');
+  document.getElementById('ptab-b').classList.toggle('act',t==='B');
+  document.getElementById('ph-hero-a').classList.toggle('hidden',t!=='A');
+  document.getElementById('ph-hero-b').classList.toggle('hidden',t!=='B');
+}
+function renderPills(){
+  document.getElementById('p-pills').innerHTML=THEMES.map(t=>`<button class="tpill ${t===cur.filterTheme?'act':''}" onclick="setFilter('${t}')">${t==='All'?'🗂️ All':t}</button>`).join('');
+}
+function setFilter(t){cur.filterTheme=t;renderPills();renderTopics();}
+function renderTopics(){
+  const el=document.getElementById('p-topics');
+  const list=T.filter(t=>cur.filterTheme==='All'||t.th===cur.filterTheme);
+  el.innerHTML=list.map(t=>{
+    const p=progress[t.id]||{};
+    return `<div class="topic-item ${cur.topicId===t.id?'sel':''}" onclick="selectTopic(${t.id})">
+      <div class="ti-num" style="background:${t.cl}">${t.id}</div>
+      <div style="flex:1"><div class="ti-theme">${t.em} ${t.th} · ${t.yr}</div><div class="ti-title">${t.ti}</div></div>
+      <div style="font-size:16px">${p.A&&p.B?'✅':p.A||p.B?'🔶':''}</div>
+    </div>`;
+  }).join('');
+}
+function selectTopic(id){cur.topicId=id;renderTopics();}
+
+function beginPractice(){
+  if(!cur.topicId){showToast('Please select a topic first!','warn');return;}
+  document.getElementById('ph-wrap').classList.add('hidden');
+  cur.checkedA={};cur.checkedB={};cur.transcript='';cur.transcriptB='';
+  cur.warmupDone=false; warmupStep=0;
+  if(cur.task==='A'){
+    document.getElementById('pa-wrap').classList.remove('hidden');
+    renderAStep(1);
+  } else {
+    document.getElementById('pb-wrap').classList.remove('hidden');
+    renderBStep(1);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  STEP TRACKER
+// ═══════════════════════════════════════════════════════════════
+function renderSteps(elId,labels,step){
+  const el=document.getElementById(elId);
+  let h='';
+  labels.forEach((lbl,i)=>{
+    const n=i+1;
+    const cls=n===step?'act':n<step?'done':'';
+    h+=`<div class="su"><div class="sc ${cls}">${n<step?'✓':n}</div><div class="sl ${cls}">${lbl}</div></div>`;
+    if(i<labels.length-1) h+=`<div class="sln ${step>i+1?'done':''}"></div>`;
+  });
+  el.innerHTML=h;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TASK A WIZARD
+// ═══════════════════════════════════════════════════════════════
+const A_STEPS=['Role','Plan','Speak','Check'];
+function renderAStep(n){
+  cur.stepA=n;
+  renderSteps('pa-steps',A_STEPS,n);
+  const topic=T.find(t=>t.id===cur.topicId);
+  const el=document.getElementById('pa-content');
+  el.innerHTML = n===1?buildA1(topic) : n===2?buildA2(topic) : n===3?buildA3(topic) : buildA4(topic);
+  setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),40);
+}
+
+function buildA1(topic){
+  const roleSeq={A:'cand-A',B:'cand-B',C:'cand-C',D:'cand-D'};
+  return `<div class="hero blue"><div class="hc-tag">Task A · Step 1 of 4</div><div class="hc-title">${topic.ti}</div><div class="hc-sub">${topic.yr}</div></div>
+  <div class="card"><div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px">📄 Situation Card</div><div style="font-size:14px;font-weight:600;line-height:1.7;background:var(--bg);padding:11px 13px;border-radius:var(--r);border-left:3px solid var(--P)">${topic.A.si}</div></div>
+  <div class="sh">Choose Your Candidate Role</div>
+  <div class="cand-grid">${Object.entries(topic.A.ca).map(([k,v])=>`<div class="cand-btn ${roleSeq[k]||''} ${cur.candRole===k?'sel':''}" onclick="selectCand('${k}')"><div class="cb-ltr cb-${k}">${k}</div><div class="cb-txt">${v}</div></div>`).join('')}</div>
+  <div class="alert al-p"><span>💡</span><div>Each candidate speaks about a <strong>different point</strong> from the same situation. Choose your role!</div></div>
+  <button class="btn btn-p" onclick="renderAStep(2)">Next: Plan with PREP →</button>`;
+}
+function selectCand(c){cur.candRole=c;renderAStep(1);}
+
+function buildA2(topic){
+  const pt=topic.A.ca[cur.candRole]||'';
+  const n=cur.notesA||{};
+  return `<div class="hero blue"><div class="hc-tag">Task A · Step 2 — Preparation (2 min)</div><div class="hc-title">Plan Your PREP Notes</div><div class="hc-sub">Write bullet keywords only. No full sentences!</div></div>
+  <div class="card" style="border:2px solid var(--P)"><div style="font-size:11px;font-weight:800;color:var(--P);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">🎯 Your Assigned Point — Candidate ${cur.candRole}</div><div style="font-size:14px;font-weight:700;color:var(--ink)">${pt}</div></div>
+  <div class="sh">Your PREP Bullet Notes</div>
+  ${['P','R','E','P+'].map((ltr,i)=>{
+    const [col,bg,lbl,ph,fld,textCol]=[['#5A47FF','#EEF0FF','Point — your main claim',"e.g. technology = online access = resources",'p','#ffffff'],['#37C8AE','#ECFBF7','Reason — why it matters',"e.g. students no longer limited by textbooks",'r','#ffffff'],['#F4D53F','#FFFBE8','Example — Malaysian example',"e.g. Google Scholar, KKM database, MOE app",'e','#171133'],['#FF8E53','#FFF1EA','Restate — strong closing',"e.g. therefore strongest benefit = free digital access",'p2','#ffffff']][i];
+    return `<div style="display:flex;gap:10px;align-items:flex-start;background:var(--card);border-radius:var(--r);padding:12px;margin-bottom:7px;box-shadow:var(--sh)"><div style="width:36px;height:36px;border-radius:10px;background:${col};color:${textCol};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0">${ltr}</div><div style="flex:1"><div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:${col};margin-bottom:3px">${lbl}</div><textarea class="ta" style="min-height:40px;background:${bg};min-height:40px" placeholder="${ph}" id="an-${fld}" oninput="if(!cur.notesA)cur.notesA={};cur.notesA['${fld}']=this.value">${n[fld]||''}</textarea></div></div>`;
+  }).join('')}
+  <div class="btn-row"><button class="btn btn-out" onclick="renderAStep(1)">← Back</button><button class="btn btn-p" onclick="goASpeak()">Start Timer & Speak →</button></div>`;
+}
+function goASpeak(){
+  if(!cur.notesA) cur.notesA={};
+  const n=cur.notesA;
+  ['p','r','e','p2'].forEach(k=>{const el=document.getElementById('an-'+k);if(el)n[k]=el.value;});
+  cur.notesA=n;
+  renderAStep(3);
+}
+
+function buildA3(topic){
+  const pt=topic.A.ca[cur.candRole]||'';
+  const n=cur.notesA||{};
+  const coach=COACHES[profile?.coach||'maya'];
+  const warmupDone=cur.warmupDone;
+  return `<div class="examiner-card">
+    <div class="ex-label">🎓 Examiner Instructions</div>
+    <div class="ex-text">"Candidate ${cur.candRole}, you have 2 minutes to prepare. You may begin. Talk about ${pt.replace('Talk about ','').toLowerCase()}. You have 2 minutes to speak."</div>
+  </div>
+  ${!warmupDone?`<div class="warmup-card" id="warmup-section">
+    <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;opacity:.65;margin-bottom:6px">${coach.av} ${coach.name} — Warm-Up (30 sec)</div>
+    <div class="wc-step-indicator"><div class="wc-dot act" id="wd0"></div><div class="wc-dot" id="wd1"></div><div class="wc-dot" id="wd2"></div></div>
+    <div class="wc-prompt" id="wu-prompt">Say ONE sentence about the topic in your own words.</div>
+    <div class="wc-hint" id="wu-hint">e.g. "I think technology is important for students."</div>
+    <button class="wc-btn" onclick="warmupNext()">✅ Done — Next Step →</button>
+  </div>`:''}
+  ${buildTimer(120,120,'prep_a','Preparation Time','2 min prep → 2 min speaking')}
+  <div class="sh">PREP Guide (keep visible while speaking)</div>
+  <div class="prep-grid">
+    <div class="prep-cell prep-cell-p"><div class="prep-label" style="color:rgba(255,255,255,.85)">P — POINT</div><div class="prep-hint">"I strongly believe that…"</div></div>
+    <div class="prep-cell prep-cell-r"><div class="prep-label" style="color:rgba(255,255,255,.85)">R — REASON</div><div class="prep-hint">"This is because…"</div></div>
+    <div class="prep-cell prep-cell-e"><div class="prep-label" style="color:rgba(23,17,51,.7)">E — EXAMPLE</div><div class="prep-hint" style="color:#171133">"For example, in Malaysia…"</div></div>
+    <div class="prep-cell prep-cell-c"><div class="prep-label" style="color:rgba(255,255,255,.85)">P+ — RESTATE</div><div class="prep-hint">"Therefore I believe…"</div></div>
+  </div>
+  <div class="card" style="border:1.5px solid var(--P);margin-bottom:11px"><div style="font-size:10px;font-weight:800;color:var(--P);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">📋 Your Bullet Notes — Candidate ${cur.candRole}</div>${Object.entries({P:n.p,R:n.r,E:n.e,'P+':n.p2}).filter(([,v])=>v).map(([k,v])=>`<div style="display:flex;gap:7px;align-items:flex-start;margin-bottom:5px"><div style="font-size:10px;font-weight:900;color:#fff;background:var(--P);border-radius:5px;padding:1px 7px;flex-shrink:0">${k}</div><div style="font-size:12px;font-weight:600;color:var(--ink2);line-height:1.4">${v}</div></div>`).join('')||'<div style="font-size:12px;color:var(--muted)">No notes — speak from memory using PREP!</div>'}</div>
+  <div class="sh">Record Yourself Speaking</div>
+  <div class="alert al-a"><span>🎤</span><div>Press Record, then speak. Chrome or Edge browser recommended. Aim for <strong>150–200 words</strong> (about 2 minutes).</div></div>
+  <div class="rec-wrap">
+    <button class="rec-btn ${cur.recOn?'rec':'idle'}" id="rec-btn" onclick="toggleRec('a')" aria-label="${cur.recOn?'Stop recording':'Start recording'}">🎙️</button>
+    <div class="rec-status" id="rec-status">${cur.recOn?'🔴 Recording… speak clearly':'Tap to start recording'}</div>
+  </div>
+  <div class="wc-row"><span class="wc-lbl">Your Transcript</span><span class="wc-num" id="wc-a">0 words</span></div>
+  <textarea class="ta" id="a-transcript" placeholder="Your voice will appear here as you speak. You can also type manually." oninput="updateWC('a-transcript','wc-a')">${cur.transcript||''}</textarea>
+  <div class="btn-row" style="margin-top:11px"><button class="btn btn-out" onclick="stopRec();renderAStep(2)">← Back</button><button class="btn btn-p" onclick="goAFeedback()">Get Feedback →</button></div>`;
+}
+
+const WU_STEPS=[
+  {prompt:'Say ONE sentence about the topic in your own words.',hint:'e.g. "I think technology is important for students."'},
+  {prompt:'Now add ONE reason why.',hint:'e.g. "This is because students can access information easily."'},
+  {prompt:'Great! Now give ONE Malaysian example.',hint:'e.g. "For example, students in Malaysia use Google Classroom."'},
+];
+let warmupStep=0;
+function warmupNext(){
+  warmupStep++;
+  if(warmupStep>=WU_STEPS.length){
+    cur.warmupDone=true;
+    const ws=document.getElementById('warmup-section');
+    if(ws){ws.style.transition='opacity .3s';ws.style.opacity='0';setTimeout(()=>{ws.style.display='none';},300);}
+    return;
+  }
+  const p=document.getElementById('wu-prompt'),h=document.getElementById('wu-hint');
+  if(p) p.textContent=WU_STEPS[warmupStep].prompt;
+  if(h) h.textContent=WU_STEPS[warmupStep].hint;
+  [0,1,2].forEach(i=>{const d=document.getElementById('wd'+i);if(d)d.classList.toggle('act',i===warmupStep);});
+}
+function goAFeedback(){
+  stopRec();
+  const ta=document.getElementById('a-transcript');
+  cur.transcript=ta?ta.value:'';
+  renderAStep(4);
+  generateFeedback('A');
+}
+
+function buildA4(topic){
+  const checked=cur.checkedA;
+  const done=Object.values(checked).filter(Boolean).length;
+  const score=Math.round((done/8)*90);
+  const band=scoreToBand(score);
+  return `<div class="hero blue"><div class="hc-tag">Task A · Step 4 — What Did You Do?</div><div class="hc-title">Tick What You Did</div><div class="hc-sub">Only tick things you actually did — be honest!</div></div>
+  <div id="a-ai-feedback"><div class="ai-load"><div style="font-size:13px;font-weight:800;color:var(--P);margin-bottom:7px">🤖 Generating your feedback…</div><div class="ai-dots"><span></span><span></span><span></span></div></div></div>
+  <div class="sh">Your Speaking Checklist</div>
+  <div class="band-meter"><div class="bm-label">Band Estimate (updates as you tick)</div><div class="bm-band" id="bm-a">${band}</div><div class="bm-track"><div class="bm-fill" id="bm-a-fill" style="width:${score}%"></div></div><div class="bm-sub" id="bm-a-sub">${done}/8 done · ${score}/90 pts</div></div>
+  <div class="cl-wrap">${CL_A.map(item=>`<div class="cl-item ${checked[item.id]?'checked':''}" onclick="tickA('${item.id}')"><div class="cl-box">✓</div><div class="cl-body"><div class="cl-crit">${item.crit}</div><div class="cl-behavior">${item.beh}</div><div class="cl-example">${item.eg}</div></div></div>`).join('')}</div>
+  <div class="btn-row"><button class="btn btn-out" onclick="renderAStep(3)">← Re-record</button><button class="btn btn-g" onclick="submitA()">Save Task A 💾</button></div>`;
+}
+function tickA(id){
+  cur.checkedA[id]=!cur.checkedA[id];
+  const done=Object.values(cur.checkedA).filter(Boolean).length;
+  const score=Math.round((done/8)*90);
+  const band=scoreToBand(score);
+  // Update checklist item
+  document.querySelectorAll('#pa-content .cl-item').forEach((el,i)=>{
+    el.classList.toggle('checked',!!cur.checkedA[CL_A[i].id]);
+  });
+  // Update meter
+  const bm=document.getElementById('bm-a');const fill=document.getElementById('bm-a-fill');const sub=document.getElementById('bm-a-sub');
+  if(bm)bm.textContent=band;
+  if(fill)fill.style.width=score+'%';
+  if(sub)sub.textContent=`${done}/8 done · ${score}/90 pts`;
+}
+function submitA(){
+  const done=Object.values(cur.checkedA).filter(Boolean).length;
+  if(done===0){showToast('Please tick at least one item you did before saving.','warn');return;}
+  const score=Math.round((done/8)*90);
+  const band=scoreToBand(score);
+  const topicId=cur.topicId;
+  if(!progress[topicId])progress[topicId]={};
+  progress[topicId].A=true;progress[topicId].scoreA=score;
+  sessions.unshift({type:'A',topicId,topic:T.find(t=>t.id===topicId)?.ti||'',score,band,date:Date.now(),transcript:cur.transcript,checks:Object.keys(cur.checkedA).filter(k=>cur.checkedA[k])});
+  localStorage.setItem('msp_progress',JSON.stringify(progress));
+  localStorage.setItem('msp_sessions',JSON.stringify(sessions.slice(0,50)));
+  showToast('Task A saved! Band '+band+' recorded. 🎉','success');
+  document.getElementById('pa-content').innerHTML=`
+    <div class="band-hero"><div class="bh-lbl">Task A — Your Result</div><div class="bh-band">${band}</div><div class="bh-score">${score} / 90 points · ${done}/8 behaviours</div><div class="bh-desc">${BAND_DESC[band]||''}</div></div>
+    <div class="card">${renderCheckedBreakdown(cur.checkedA,CL_A,'#2563EB')}</div>
+    <div class="alert al-g"><span>🎉</span><div>Task A saved! Continue to Task B for a complete practice session.</div></div>
+    <div class="btn-row"><button class="btn btn-out" onclick="toPracHome()">← Topics</button><button class="btn btn-g" onclick="toTaskB()">Task B →</button></div>`;
+}
+function toTaskB(){
+  cur.task='B';cur.checkedB={};cur.transcriptB='';
+  document.getElementById('pa-wrap').classList.add('hidden');
+  document.getElementById('pb-wrap').classList.remove('hidden');
+  renderBStep(1);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TASK B WIZARD
+// ═══════════════════════════════════════════════════════════════
+const B_STEPS=['Points','Plan','Speak','Check'];
+function renderBStep(n){
+  cur.stepB=n;
+  renderSteps('pb-steps',B_STEPS,n);
+  const topic=T.find(t=>t.id===cur.topicId);
+  const el=document.getElementById('pb-content');
+  el.innerHTML = n===1?buildB1(topic) : n===2?buildB2(topic) : n===3?buildB3(topic) : buildB4(topic);
+  setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),40);
+}
+
+function buildB1(topic){
+  const pts=Object.entries(topic.B.pt).map(([k,v],i)=>`<div style="display:flex;gap:8px;align-items:flex-start;padding:9px 11px;background:${PT_BG[i]};border-radius:var(--r);margin-bottom:5px;cursor:pointer;border:2px solid ${cur.selPt===k?PT_CL[i]:'transparent'}" onclick="selectPt('${k}')"><div style="width:22px;height:22px;border-radius:6px;background:${PT_CL[i]};color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0">${k}</div><div style="font-size:13px;font-weight:600;color:var(--ink);line-height:1.4">${v}</div></div>`).join('');
+  return `<div class="hero green"><div class="hc-tag">Task B · Step 1 · Same Topic as Task A</div><div class="hc-title">${topic.ti}</div><div class="hc-sub">Discuss as a group → reach ONE best suggestion</div></div>
+  <div class="card" style="border-left:4px solid var(--G);margin-bottom:11px"><div style="font-size:11px;font-weight:800;color:var(--GD);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">📖 Situation</div><div style="font-size:13px;font-weight:600;line-height:1.7;color:var(--ink)">${topic.B.si}</div></div>
+  <div class="card" style="margin-bottom:11px"><div style="font-size:13px;font-weight:900;color:var(--ink);margin-bottom:9px">💬 Discussion Question</div><div style="font-size:14px;font-weight:700;background:var(--GL);border-radius:var(--r);padding:11px 13px;line-height:1.5;border-left:3px solid var(--G)">${topic.B.q}</div></div>
+  <div class="sh">5 Mind-Map Ideas (tap to highlight yours)</div>
+  ${pts}
+  <div class="alert al-p"><span>💡</span><div>You may support, oppose, or add your own ideas! The mind map is just a starting point.</div></div>
+  <button class="btn btn-g" onclick="renderBStep(2)">Next: Plan Your Contribution →</button>`;
+}
+function selectPt(k){cur.selPt=k;renderBStep(1);}
+
+function buildB2(topic){
+  const selText=cur.selPt?topic.B.pt[cur.selPt]||'':'(tap a point above to choose)';
+  return `<div class="hero green"><div class="hc-tag">Task B · Step 2 — Preparation (3 min)</div><div class="hc-title">Plan Your Discussion Moves</div><div class="hc-sub">One idea + reason + example + interaction moves</div></div>
+  ${cur.selPt?`<div class="card" style="border:2px solid var(--G)"><div style="font-size:10px;font-weight:800;color:var(--GD);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Your Chosen Point</div><div style="font-size:14px;font-weight:700;color:var(--ink)">${selText}</div></div>`:''}
+  <div class="card" style="margin-bottom:11px"><div style="font-size:13px;font-weight:900;color:var(--GD);margin-bottom:9px">Your 4-Move Plan</div><div class="info-list"><div class="info-row"><div class="ir-icon" style="background:var(--GL);font-size:14px;font-weight:900;color:var(--GD)">1</div><div><div class="ir-t">Share idea + reason</div><div class="ir-s">"I think [point] is most effective because…"</div></div></div><div class="info-row"><div class="ir-icon" style="background:var(--GL);font-size:14px;font-weight:900;color:var(--GD)">2</div><div><div class="ir-t">Give Malaysian example</div><div class="ir-s">"For example in Malaysia…"</div></div></div><div class="info-row"><div class="ir-icon" style="background:var(--GL);font-size:14px;font-weight:900;color:var(--GD)">3</div><div><div class="ir-t">Respond to a candidate by name</div><div class="ir-s">"I agree with Candidate A…" or "I see your point, however…"</div></div></div><div class="info-row"><div class="ir-icon" style="background:var(--GL);font-size:14px;font-weight:900;color:var(--GD)">4</div><div><div class="ir-t">Help reach consensus</div><div class="ir-s">"Shall we agree that [X] is the best?"</div></div></div></div></div>
+  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px">Quick Interaction Phrases</div>
+  <div style="margin-bottom:11px"><span class="phrase" onclick="insertBNote('I agree with Candidate A because ')">Agree</span><span class="phrase" onclick="insertBNote('I see your point, however I believe ')">Disagree</span><span class="phrase" onclick="insertBNote('I would like to add that ')">Add</span><span class="phrase" onclick="insertBNote('Candidate B, what do you think? ')">Ask</span><span class="phrase" onclick="insertBNote('Shall we agree that ')">Consensus</span></div>
+  <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:5px">Your Notes (keywords only)</div>
+  <textarea class="ta" id="b-notes" style="margin-bottom:11px" placeholder="Write key phrases, idea keywords, example names…">${cur.notesB||''}</textarea>
+  <div class="btn-row"><button class="btn btn-out" onclick="renderBStep(1)">← Back</button><button class="btn btn-g" onclick="goBSpeak()">Start Timer & Discuss →</button></div>`;
+}
+function insertBNote(text){const ta=document.getElementById('b-notes');if(ta){ta.value+=(ta.value?'\n':'')+text;ta.focus();}}
+function goBSpeak(){const ta=document.getElementById('b-notes');if(ta)cur.notesB=ta.value;renderBStep(3);}
+
+function buildB3(topic){
+  const pts=Object.entries(topic.B.pt).map(([k,v],i)=>`<div style="display:flex;gap:7px;align-items:center;padding:7px 10px;background:${PT_BG[i]};border-radius:8px;margin-bottom:5px;border:2px solid ${cur.selPt===k?PT_CL[i]:'transparent'}"><div style="width:20px;height:20px;border-radius:5px;background:${PT_CL[i]};color:#fff;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">${k}</div><div style="font-size:12px;font-weight:600;color:var(--ink)">${v}</div></div>`).join('');
+  return `<div class="alert al-a" style="margin-bottom:10px"><span>👥</span><div><strong>Solo Practice Mode:</strong> Practise YOUR turns — open, respond, ask questions, and conclude. In the real test you discuss with others.</div></div>
+  <div class="examiner-card green"><div class="ex-label">🎓 Examiner Instructions</div><div class="ex-text">"Now you are going to discuss for about 10 minutes. You may support or oppose the other candidates' views. At the end, try to decide on the best suggestion."</div></div>
+  <div class="sh">Step 1 — Preparation (3 minutes)</div>
+  ${buildTimer(180,180,'prep_b','Preparation Time','3 min prep → tap ▶ Start to begin')}
+  <div class="card" style="margin-bottom:10px"><div style="font-size:12px;font-weight:800;color:var(--GD);margin-bottom:6px;text-transform:uppercase;letter-spacing:.07em">💬 Discussion Question</div><div style="font-size:14px;font-weight:700;line-height:1.5;color:var(--ink);margin-bottom:8px">${topic.B.q}</div><div style="font-size:11px;font-weight:800;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Mind-Map Points</div>${pts}</div>
+  ${cur.notesB?`<div class="card" style="margin-bottom:10px"><div style="font-size:10px;font-weight:800;color:var(--GD);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">📋 Your Notes</div><div style="font-size:13px;font-weight:600;color:var(--ink2);white-space:pre-wrap;line-height:1.6">${cur.notesB}</div></div>`:''}
+  <div class="sh">Step 2 — Discussion Practice (10 minutes)</div>
+  <div id="b-speak-section">
+    <div style="background:var(--GL);border-radius:var(--r);padding:13px;text-align:center;margin-bottom:11px">
+      <div style="font-size:13px;font-weight:800;color:var(--GD);margin-bottom:5px">⏳ Complete preparation first</div>
+      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px">Run the 3-minute timer above, or tap the button below to skip straight to discussion.</div>
+      <button class="btn btn-g" style="max-width:260px;margin:0 auto" onclick="revealBSpeak()">⏩ Skip Prep — Start Discussion Now</button>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:4px"><button class="btn btn-out" onclick="stopRec();renderBStep(2)">← Back to Plan</button></div>`;
+}
+
+function revealBSpeak(){
+  stopTimer();
+  const el=document.getElementById('b-speak-section');
+  if(!el)return;
+  el.innerHTML=buildBSpeakSection();
+  updateWC('b-transcript','wc-b');
+  // auto-start 10-min discussion timer
+  switchPhase(600,'Discussion Time','10 minutes — speak your turns now!','speak_b');
+}
+
+function buildBSpeakSection(){
+  return `<div class="alert al-g"><span>🎤</span><div>Record your speaking turns. Aim for <strong>3–5 clear contributions</strong> — use candidate names, agree/disagree, and end with a consensus statement.</div></div>
+  <div class="rec-wrap">
+    <button class="rec-btn ${cur.recOn?'rec':'idle'}" id="rec-btn" onclick="toggleRec('b')" aria-label="${cur.recOn?'Stop recording':'Start recording'}">🎙️</button>
+    <div class="rec-status" id="rec-status">${cur.recOn?'🔴 Recording… speak clearly':'Tap 🎙️ to start recording your turns'}</div>
+  </div>
+  <div class="wc-row"><span class="wc-lbl">Your Discussion Transcript</span><span class="wc-num" id="wc-b">0 words</span></div>
+  <textarea class="ta" id="b-transcript" placeholder="Speak each turn aloud and record it. You can also type manually.\n\nTurn 1: Open — state your idea + reason\nTurn 2: Respond to Candidate A by name\nTurn 3: Ask a question to another candidate\nTurn 4+: Build + push for consensus" oninput="updateWC('b-transcript','wc-b')">${cur.transcriptB||''}</textarea>
+  <div class="btn-row" style="margin-top:11px">
+    <button class="btn btn-out" onclick="stopRec();renderBStep(2)">← Back</button>
+    <button class="btn btn-g" onclick="goBFeedback()">Get Feedback →</button>
+  </div>`;
+}
+
+function goBFeedback(){
+  stopRec();
+  const ta=document.getElementById('b-transcript');
+  cur.transcriptB=ta?ta.value:'';
+  if(!cur.transcriptB.trim()){showToast('Please record or type at least one discussion turn before getting feedback.','warn');return;}
+  renderBStep(4);
+  generateFeedback('B');
+}
+
+function buildB4(topic){
+  const checked=cur.checkedB;
+  const done=Object.values(checked).filter(Boolean).length;
+  const score=Math.round((done/8)*90);
+  const band=scoreToBand(score);
+  return `<div class="hero green"><div class="hc-tag">Task B · Step 4 — What Did You Do?</div><div class="hc-title">Tick What You Did</div><div class="hc-sub">Only tick what you actually did — be honest!</div></div>
+  <div id="b-ai-feedback"><div class="ai-load"><div style="font-size:13px;font-weight:800;color:var(--GD);margin-bottom:7px">🤖 Generating your feedback…</div><div class="ai-dots"><span></span><span></span><span></span></div></div></div>
+  <div class="sh">Your Discussion Checklist</div>
+  <div class="band-meter"><div class="bm-label">Band Estimate (updates as you tick)</div><div class="bm-band" id="bm-b">${band}</div><div class="bm-track"><div class="bm-fill" id="bm-b-fill" style="width:${score}%"></div></div><div class="bm-sub" id="bm-b-sub">${done}/8 done · ${score}/90 pts</div></div>
+  <div class="cl-wrap">${CL_B.map(item=>`<div class="cl-item ${checked[item.id]?'checked':''}" onclick="tickB('${item.id}')"><div class="cl-box">✓</div><div class="cl-body"><div class="cl-crit">${item.crit}</div><div class="cl-behavior">${item.beh}</div><div class="cl-example">${item.eg}</div></div></div>`).join('')}</div>
+  <div class="btn-row"><button class="btn btn-out" onclick="renderBStep(3)">← Re-record</button><button class="btn btn-g" onclick="submitB()">Save Task B 💾</button></div>`;
+}
+function tickB(id){
+  cur.checkedB[id]=!cur.checkedB[id];
+  const done=Object.values(cur.checkedB).filter(Boolean).length;
+  const score=Math.round((done/8)*90);
+  const band=scoreToBand(score);
+  document.querySelectorAll('#pb-content .cl-item').forEach((el,i)=>{el.classList.toggle('checked',!!cur.checkedB[CL_B[i].id]);});
+  const bm=document.getElementById('bm-b');const fill=document.getElementById('bm-b-fill');const sub=document.getElementById('bm-b-sub');
+  if(bm)bm.textContent=band;if(fill)fill.style.width=score+'%';if(sub)sub.textContent=`${done}/8 done · ${score}/90 pts`;
+}
+function submitB(){
+  const done=Object.values(cur.checkedB).filter(Boolean).length;
+  if(done===0){showToast('Please tick at least one item before saving.','warn');return;}
+  const score=Math.round((done/8)*90);
+  const band=scoreToBand(score);
+  const topicId=cur.topicId;
+  if(!progress[topicId])progress[topicId]={};
+  progress[topicId].B=true;progress[topicId].scoreB=score;
+  sessions.unshift({type:'B',topicId,topic:T.find(t=>t.id===topicId)?.ti||'',score,band,date:Date.now(),transcript:cur.transcriptB,checks:Object.keys(cur.checkedB).filter(k=>cur.checkedB[k])});
+  localStorage.setItem('msp_progress',JSON.stringify(progress));
+  localStorage.setItem('msp_sessions',JSON.stringify(sessions.slice(0,50)));
+  showToast('Task B saved! Session complete. 🎉','success');
+  const aScore=progress[topicId]?.scoreA||0;
+  const combined=aScore+score;
+  const combBand=combined?combinedBand(combined):band;
+  renderSteps('pb-steps',B_STEPS,4);
+  document.getElementById('pb-content').innerHTML=`
+    <div class="band-hero"><div class="bh-lbl">${aScore?'Combined A+B Band':'Task B Band'}</div><div class="bh-band">${combBand}</div><div class="bh-score">${combined||score} / ${aScore?180:90} pts · ${done}/8 behaviours</div><div class="bh-desc">${BAND_DESC[combBand]||''}</div></div>
+    <div class="card">${renderCheckedBreakdown(cur.checkedB,CL_B,'#059669')}</div>
+    <div class="alert al-g"><span>🎉</span><div>Full session complete! View your dashboard for detailed progress.</div></div>
+    <button class="btn btn-p" onclick="goTo('results')">📊 View Full Report →</button>
+    <button class="btn btn-ghost" style="margin-top:7px" onclick="toPracHome()">← Practice More</button>`;
+}
+
+function renderCheckedBreakdown(checked,list,color){
+  const yes=list.filter(i=>checked[i.id]);
+  const no=list.filter(i=>!checked[i.id]);
+  return `<div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:9px">What You Did Well</div>
+  ${yes.length?yes.map(i=>`<div style="display:flex;gap:7px;align-items:flex-start;margin-bottom:6px"><div style="color:var(--G);font-size:14px;flex-shrink:0;margin-top:1px">✅</div><div style="font-size:13px;font-weight:600;color:var(--ink)">${i.beh}</div></div>`).join(''):'<div style="font-size:13px;color:var(--muted)">No items checked.</div>'}
+  ${no.length?`<div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin:10px 0 8px">Work On Next Time</div>${no.map(i=>`<div style="display:flex;gap:7px;align-items:flex-start;margin-bottom:6px"><div style="color:var(--A);font-size:14px;flex-shrink:0;margin-top:1px">→</div><div><div style="font-size:13px;font-weight:600;color:var(--ink)">${i.beh}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${i.eg}</div></div></div>`).join('')}`:''}`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════════════════════════
+function buildTimer(secs,total,mode,phase,sub){
+  const C=2*Math.PI*58;
+  return `<div class="timer-wrap"><div class="t-phase" id="t-phase">${phase}</div><div class="t-ring"><svg width="130" height="130" viewBox="0 0 130 130"><circle class="tr-bg" cx="65" cy="65" r="58"/><circle class="tr-fg" id="t-arc" cx="65" cy="65" r="58" stroke-dasharray="${C}" stroke-dashoffset="0"/></svg><div class="t-num" id="t-num">${fmt(secs)}</div></div><div class="t-sub" id="t-sub">${sub}</div><div class="t-btns"><button class="tbtn tbtn-go" onclick="startTimer(${secs},${total},'${mode}')">▶ Start</button><button class="tbtn tbtn-skip" onclick="skipSpeak('${mode}')">⏩ Skip</button><button class="tbtn tbtn-rst" onclick="resetTimer(${secs})">↺ Reset</button></div></div>`;
+}
+function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function startTimer(secs,total,mode){
+  stopTimer();
+  cur.timeLeft=secs;cur.totalSecs=total;cur.phase=mode;updateTimerDisplay();
+  cur.timerInt=setInterval(()=>{
+    cur.timeLeft--;updateTimerDisplay();
+    if(cur.timeLeft<=0){
+      clearInterval(cur.timerInt);
+      if(mode==='prep_a') switchPhase(120,'Speaking Time','2 minutes — speak now!','speak_a');
+      else if(mode==='prep_b') switchPhase(600,'Discussion Time','10 minutes — discuss now!','speak_b');
+      else{const p=document.getElementById('t-phase');if(p)p.textContent='⏱️ Time Up!';stopRec();beep(440);}
+    }
+  },1000);
+}
+function switchPhase(secs,label,sub,mode){
+  cur.phase=mode;cur.timeLeft=secs;cur.totalSecs=secs;
+  const ph=document.getElementById('t-phase'),su=document.getElementById('t-sub');
+  if(ph)ph.textContent=label;if(su)su.textContent=sub;
+  updateTimerDisplay();beep(880);
+  // If entering speak_b phase, reveal the recording section
+  if(mode==='speak_b'){
+    const bss=document.getElementById('b-speak-section');
+    if(bss && !document.getElementById('b-transcript')) bss.innerHTML=buildBSpeakSection();
+  }
+  // Prompt recording
+  const rb=document.getElementById('rec-btn'),st=document.getElementById('rec-status');
+  if(rb&&!cur.recOn){rb.style.animation='rpulse 1.2s infinite';if(st)st.textContent='⏰ Time to speak! Tap 🎙️ to record.';}
+  cur.timerInt=setInterval(()=>{
+    cur.timeLeft--;updateTimerDisplay();
+    if(cur.timeLeft<=0){clearInterval(cur.timerInt);const p=document.getElementById('t-phase');if(p)p.textContent='⏱️ Time Up!';stopRec();beep(440);}
+  },1000);
+}
+function skipSpeak(mode){
+  stopTimer();
+  const isA=mode==='prep_a'||mode==='speak_a';
+  if(mode==='speak_a'||mode==='speak_b'){
+    // Already in speaking phase — just reset to full speaking time
+    cur.timeLeft=isA?120:600;cur.totalSecs=isA?120:600;updateTimerDisplay();
+    const p=document.getElementById('t-phase');if(p)p.textContent=isA?'Speaking Time':'Discussion Time';
+    startTimer(cur.timeLeft,cur.totalSecs,mode);return;
+  }
+  switchPhase(isA?120:600,isA?'Speaking Time':'Discussion Time',isA?'2 minutes — speak now!':'10 minutes — discuss now!',isA?'speak_a':'speak_b');
+}
+function resetTimer(secs){stopTimer();cur.timeLeft=secs;cur.totalSecs=secs;updateTimerDisplay();const p=document.getElementById('t-phase');if(p)p.textContent='Preparation Time';}
+function stopTimer(){if(cur.timerInt){clearInterval(cur.timerInt);cur.timerInt=null;}}
+function updateTimerDisplay(){
+  const d=document.getElementById('t-num'),arc=document.getElementById('t-arc');
+  if(d)d.textContent=fmt(cur.timeLeft);
+  if(arc){const C=2*Math.PI*58,pct=cur.totalSecs>0?cur.timeLeft/cur.totalSecs:1;arc.style.strokeDashoffset=C*(1-pct);arc.style.stroke=cur.timeLeft<30?'#EF4444':'var(--A)';}
+}
+function beep(freq){try{const ctx=new(window.AudioContext||window.webkitAudioContext)(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=freq;g.gain.setValueAtTime(.35,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.45);o.start();o.stop(ctx.currentTime+.45);}catch(e){}}
+
+// ═══════════════════════════════════════════════════════════════
+//  RECORDING
+// ═══════════════════════════════════════════════════════════════
+function toggleRec(task){cur.recOn?stopRec():startRec(task);}
+function startRec(task){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){showToast('Speech recognition needs Chrome or Edge. You can type manually.','warn');return;}
+  const r=new SR();r.lang='en-MY';r.continuous=true;r.interimResults=true;
+  const taId=task==='a'?'a-transcript':'b-transcript';
+  const wcId=task==='a'?'wc-a':'wc-b';
+  let final='';
+  r.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)final+=e.results[i][0].transcript+' ';else interim=e.results[i][0].transcript;}const ta=document.getElementById(taId);if(ta){ta.value=final+interim;updateWC(taId,wcId);}};
+  r.onerror=ev=>{if(ev.error==='language-not-supported'){r.lang='en-US';try{r.start();}catch(e){stopRec();}}else if(ev.error==='not-allowed'){stopRec();const st=document.getElementById('rec-status');if(st)st.textContent='⚠️ Microphone blocked. Allow access in browser settings.';}else stopRec();};
+  r.start();cur.recognition=r;cur.recOn=true;
+  const rb=document.getElementById('rec-btn'),st=document.getElementById('rec-status');
+  if(rb){rb.classList.remove('idle');rb.classList.add('rec');rb.style.animation='';}
+  if(st)st.textContent='🔴 Recording… speak clearly';
+}
+function stopRec(){
+  if(cur.recognition){try{cur.recognition.stop();}catch(e){}}
+  cur.recognition=null;cur.recOn=false;
+  const rb=document.getElementById('rec-btn'),st=document.getElementById('rec-status');
+  if(rb){rb.classList.remove('rec');rb.classList.add('idle');rb.style.animation='';}
+  if(st)st.textContent='Recording stopped. Edit transcript above if needed.';
+  // Auto-save transcripts to state
+  const ta=document.getElementById('a-transcript');if(ta)cur.transcript=ta.value;
+  const tb=document.getElementById('b-transcript');if(tb)cur.transcriptB=tb.value;
+}
+function updateWC(taId,wcId){
+  const ta=document.getElementById(taId),wc=document.getElementById(wcId);
+  if(!ta||!wc)return;
+  const words=ta.value.trim().split(/\s+/).filter(Boolean).length;
+  wc.textContent=words+' words';
+  wc.style.color=words<80?'var(--R)':words<130?'var(--AD)':'var(--G)';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  AI FEEDBACK
+// ═══════════════════════════════════════════════════════════════
+async function generateFeedback(task){
+  const topic=T.find(t=>t.id===cur.topicId);
+  const transcript=(task==='A'?cur.transcript:cur.transcriptB)||'(no transcript recorded)';
+  const pt=task==='A'?(topic?.A?.ca[cur.candRole]||''):(topic?.B?.q||'');
+  const lvl={b:'Beginner (Band 2.5–3.0)',i:'Intermediate (Band 3.5–4.5)',a:'Advanced (Band 5.0+)'}[profile?.band||'i'];
+  const coach=COACHES[profile?.coach||'maya'];
+  const prompt=`You are a MUET Speaking examiner in Malaysia. The student is ${lvl}. Their coach persona is "${coach.name}".
+Topic: "${topic?.ti}" | ${task==='A'?`Task A point: "${pt}"`:`Task B question: "${pt}"`}
+Transcript: "${transcript.slice(0,500)}"
+Reply ONLY in this exact JSON (no markdown, no extra text):
+{"strengths":["one specific strength"],"improvements":["most important improvement","second improvement"],"betterVersion":"one improved MUET sentence example","tips":["one practical tip"],"prepCheck":{"point":true,"reason":true,"example":false,"restate":true},"nextMission":"one short next practice task","overall":"one short encouraging sentence from the coach"}`;
+  const feedEl=document.getElementById(task==='A'?'a-ai-feedback':'b-ai-feedback');
+  if(!feedEl)return;
+  const text=await callAI(prompt);
+  if(text){
+    try{
+      const fb=JSON.parse(text.replace(/```json|```/g,'').trim());
+      feedEl.innerHTML=renderCoachFeedback(fb,task,coach);
+      return;
+    }catch(e){}
+  }
+  feedEl.innerHTML=offlineFeedback(task,coach);
+}
+
+function renderCoachFeedback(fb,task,coach){
+  const pc=fb.prepCheck||{};
+  const prepRows=task==='A'?[
+    ['P — Point',pc.point],['R — Reason',pc.reason],['E — Example',pc.example],['P+ — Restate',pc.restate]
+  ]:[
+    ['Contributed idea',pc.point],['Used example',pc.reason],['Referred by name',pc.example],['Reached consensus',pc.restate]
+  ];
+  return `<div class="fb-coach-header">
+    <div class="fb-coach-av" style="background:#eef2ff">${coach.av}</div>
+    <div><div class="fb-coach-name">${coach.name}</div><div class="fb-coach-msg">${fb.overall||'Keep going — you are improving!'}</div></div>
+  </div>
+  <div class="fb fb-good"><div class="fb-head"><span>💪</span>What You Did Well</div>${(fb.strengths||[]).map(s=>`<div class="fb-item"><span>✅</span>${s}</div>`).join('')}</div>
+  <div class="fb fb-work"><div class="fb-head"><span>🎯</span>What to Improve</div>${(fb.improvements||[]).map(s=>`<div class="fb-item"><span>→</span>${s}</div>`).join('')}${fb.betterVersion?`<div style="margin-top:8px;background:var(--PL);border-radius:8px;padding:8px 10px"><div style="font-size:10px;font-weight:800;color:var(--P);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Better MUET Version</div><div style="font-size:12px;font-weight:600;color:var(--ink);line-height:1.5;font-style:italic">"${fb.betterVersion}"</div></div>`:''}</div>
+  <div class="fb-prep-check"><div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px">PREP Check</div>${prepRows.map(([lbl,done])=>`<div class="fpc-row"><span class="fpc-label">${lbl}</span><span class="fpc-status">${done?'✅':'⚠️'}</span></div>`).join('')}</div>
+  <div class="fb fb-tip"><div class="fb-head"><span>💡</span>Tip</div>${(fb.tips||[]).map(s=>`<div class="fb-item"><span>🔑</span>${s}</div>`).join('')}</div>
+  ${fb.nextMission?`<div class="mission-next"><div class="mn-lbl">Next Mission</div><div class="mn-text">🎯 ${fb.nextMission}</div></div>`:''}`;
+}
+
+async function callAI(prompt){
+  if(profile?.aiMode==='gemini'&&profile?.gemKey){
+    try{
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(profile.gemKey)}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+      if(!res.ok)return null;
+      const data=await res.json();
+      return data?.candidates?.[0]?.content?.parts?.map(p=>p.text).join('')||null;
+    }catch(e){return null;}
+  }
+  return null;
+}
+
+function offlineFeedback(task,coach){
+  coach=coach||COACHES[profile?.coach||'maya'];
+  const checked=task==='A'?cur.checkedA:cur.checkedB;
+  const cl=task==='A'?CL_A:CL_B;
+  const doneIds=Object.keys(checked).filter(k=>checked[k]);
+  const missedItems=cl.filter(i=>!checked[i.id]).slice(0,2);
+  const prepDone={point:!!checked.point||!!checked.greet,reason:!!checked.reason||!!checked.contribute,example:!!checked.example,restate:!!checked.restate||!!checked.consensus};
+  const prepRows=task==='A'?[['P — Point',prepDone.point],['R — Reason',prepDone.reason],['E — Example',prepDone.example],['P+ — Restate',prepDone.restate]]:[['Contributed idea',!!checked.contribute],['Used example',!!checked.example],['Referred by name',!!checked.named],['Reached consensus',!!checked.consensus]];
+  const nextMissions={fluency:'Record yourself again. Focus on speaking without long pauses.',ideas:'Before recording, write 3 bullet points: one reason + one example + one closing.',interact:'Practise responding: "I agree with Candidate A because…"',vocab:"Replace one 'good/important' with a better word: 'beneficial/crucial/effective'.",confidence:'Try the warm-up steps again before recording. Speak slowly and breathe.'};
+  const nm=nextMissions[profile?.weakSkill||'fluency'];
+  const tipA='Practise saying the full PREP sequence out loud 5 times daily on any topic.';
+  const tipB='Practise with a partner: argue for each of the 5 mind-map points, then vote on the best.';
+  const strA=doneIds.length>0?`You demonstrated ${doneIds.length} out of 8 speaking behaviours. Great effort!`:'You attempted the PREP structure — that is the correct approach for Task A.';
+  const strB=doneIds.length>0?`You contributed ${doneIds.length} out of 8 discussion behaviours. Keep building!`:'Good effort in contributing to the discussion. Participation is the most important first step.';
+  const impA=missedItems.length?`Work on: ${missedItems.map(i=>i.beh).join('. ')}`:task==='A'?'Make your Example specifically Malaysian — name a real programme, statistic, or institution.':'Try to refer to other candidates by name.';
+  const betterV=task==='A'?'"For example, Malaysian students can use Google Classroom and Quizizz to access course materials at any time."':'"Based on our discussion, I strongly feel that international cooperation is the most effective solution. Shall we all agree on this?"';
+  return renderCoachFeedback({strengths:[strA],improvements:[impA],betterVersion:betterV,tips:[task==='A'?tipA:tipB],prepCheck:{point:prepDone.point,reason:prepDone.reason,example:prepDone.example,restate:prepDone.restate},nextMission:nm,overall:coach.msgs[1]},task,coach);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BAND UTILITIES
+// ═══════════════════════════════════════════════════════════════
+function scoreToBand(s){if(s>=78)return'5.0';if(s>=67)return'4.5';if(s>=56)return'4.0';if(s>=45)return'3.5';if(s>=33)return'3.0';if(s>=22)return'2.5';if(s>=11)return'2.0';return'1.0';}
+function combinedBand(s){if(s>=150)return'5.0';if(s>=132)return'4.5';if(s>=114)return'4.0';if(s>=90)return'3.5';if(s>=66)return'3.0';if(s>=42)return'2.5';if(s>=20)return'2.0';return'1.0';}
+function bandClass(b){const n=parseFloat(b);return n>=4.5?'h':n>=3.0?'m':'l';}
+
+// ═══════════════════════════════════════════════════════════════
+//  RESULTS
+// ═══════════════════════════════════════════════════════════════
+function renderResults(){
+  const el=document.getElementById('results-body');
+  if(!sessions.length){
+    el.innerHTML=`<div style="text-align:center;padding:44px 18px 24px">
+      <div style="width:88px;height:88px;border-radius:26px;background:linear-gradient(135deg,var(--taskA1),var(--taskA2));display:flex;align-items:center;justify-content:center;font-size:42px;margin:0 auto 16px;box-shadow:0 8px 28px rgba(62,104,255,.25)">📊</div>
+      <div style="font-size:20px;font-weight:900;color:var(--ink);margin-bottom:8px;font-family:'Sora',sans-serif">No sessions yet</div>
+      <div style="font-size:14px;font-weight:600;color:var(--muted);margin-bottom:6px;line-height:1.6">Complete a Task A or B practice to see<br>your progress and band estimates here.</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin:20px auto 0;max-width:220px">
+        <button class="btn btn-p" onclick="goTo('practice')">🎤 Start Practising →</button>
+        <button class="btn btn-ghost" onclick="goTo('learn')">📖 Study First</button>
+      </div>
+    </div>`;
+    return;
+  }
+  const latest=sessions[0];
+  const avgBand=(sessions.map(s=>parseFloat(s.band)||0).filter(Boolean).reduce((a,b)=>a+b,0)/sessions.length).toFixed(1);
+  const done=Object.keys(progress).filter(k=>progress[k]?.A||progress[k]?.B).length;
+  // Find missed behaviours across all sessions
+  const allChecks={};
+  const ALL_CL=[...CL_A,...CL_B];
+  ALL_CL.forEach(i=>{allChecks[i.id]={name:i.beh,count:0,sessions:0};});
+  sessions.forEach(s=>{ALL_CL.forEach(i=>{allChecks[i.id].sessions++;if(s.checks?.includes(i.id))allChecks[i.id].count++;});});
+  const missed=Object.entries(allChecks).filter(([,v])=>v.sessions>0).map(([id,v])=>({id,name:v.name,rate:v.count/v.sessions})).sort((a,b)=>a.rate-b.rate).slice(0,3);
+
+  el.innerHTML=`
+  <div style="background:linear-gradient(135deg,#2F6BFF,#6C3BFF);border-radius:var(--rxl);padding:20px 18px;color:#fff;margin-bottom:13px">
+    <div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.58;margin-bottom:5px">My Progress · ${profile?.name||'Student'}</div>
+    <div style="font-size:48px;font-weight:900;color:var(--A);line-height:1">${latest.band}</div>
+    <div style="font-size:13px;opacity:.7;margin-top:3px">Latest Band · ${latest.topic||'—'}</div>
+    <div style="font-size:12px;opacity:.55;margin-top:6px;line-height:1.5">${BAND_DESC[latest.band]||''}</div>
+  </div>
+  <div class="stat-grid">
+    <div class="stat-box"><div class="st-num" style="color:var(--P)">${sessions.length}</div><div class="st-lbl">Sessions</div></div>
+    <div class="stat-box"><div class="st-num" style="color:var(--G)">${done}</div><div class="st-lbl">Topics</div></div>
+    <div class="stat-box"><div class="st-num" style="color:var(--A)">${avgBand}</div><div class="st-lbl">Avg Band</div></div>
+  </div>
+  ${missed.length?`<div class="sh">Behaviours to Practise More</div>
+  <div class="card">${missed.map(m=>`<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:7px;height:7px;border-radius:50%;background:${m.rate<0.3?'var(--R)':'var(--A)'};flex-shrink:0;margin-top:5px"></div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--ink)">${m.name}</div><div style="font-size:11px;color:var(--muted)">Done in ${Math.round(m.rate*100)}% of sessions</div></div></div>`).join('')}</div>`:''}
+  <div class="sh">Session History</div>
+  <div class="card">${sessions.slice(0,12).map(s=>{
+    const d=new Date(s.date),ds=`${d.getDate()}/${d.getMonth()+1}`;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)"><div style="width:30px;height:30px;border-radius:8px;background:${s.type==='A'?'var(--PL)':'var(--GL)'};color:${s.type==='A'?'var(--P)':'var(--GD)'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0">T${s.type}</div><div style="flex:1"><div style="font-size:12px;font-weight:700;color:var(--ink)">${s.topic||'—'}</div><div style="font-size:11px;color:var(--muted)">${ds} · ${s.score}/90 · ${(s.checks||[]).length}/8 done</div></div><span class="bchip ${bandClass(s.band)}">${s.band}</span></div>`;
+  }).join('')}</div>
+  <button class="btn btn-out" onclick="clearResults()" style="margin-top:7px">↺ Reset All Data</button>
+  <button class="btn btn-p" onclick="goTo('practice')" style="margin-top:7px">🎤 Practice Again →</button>`;
+}
+function clearResults(){
+  showModal({icon:'🗑️',title:'Reset All Data',msg:'This will permanently delete all your practice sessions and progress. This cannot be undone.',confirmLabel:'Yes, Reset',confirmClass:'btn-out',cancelLabel:'Cancel',onConfirm:()=>{
+    sessions=[];progress={};
+    localStorage.removeItem('msp_sessions');
+    localStorage.removeItem('msp_progress');
+    renderResults();
+    showToast('All data has been reset.','info');
+  }});
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  LECTURER
+// ═══════════════════════════════════════════════════════════════
+function lecTab(n){
+  [1,2,3].forEach(i=>{document.getElementById('lc'+i).classList.toggle('hidden',i!==n);document.getElementById('lc-t'+i).classList.toggle('act',i===n);});
+  if(n===1)renderLecStudents();
+  if(n===2)renderLecAnalytics();
+}
+function renderLecStudents(){
+  const el=document.getElementById('l-list');
+  if(!el)return;
+  if(!students.length){el.innerHTML='<div style="text-align:center;padding:20px;font-size:13px;font-weight:600;color:var(--muted)">No student records yet. Add students above.</div>';return;}
+  const groups={};students.forEach(s=>{const g=s.group||'General';if(!groups[g])groups[g]=[];groups[g].push(s);});
+  el.innerHTML=Object.entries(groups).map(([g,ss])=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><div style="font-size:14px;font-weight:900;color:var(--ink)">📋 ${g}</div><div style="font-size:11px;font-weight:700;color:var(--muted)">${ss.length} students</div></div>${ss.map(s=>`<div class="l-row"><div class="l-av">${(s.name||'S').charAt(0)}</div><div class="l-info"><div class="l-name">${s.name||'Student'}</div><div class="l-sub">${s.no||''}</div></div>${s.band?`<span class="bchip ${bandClass(s.band)}">${s.band}</span>`:''}<button onclick="removeStudent(${students.indexOf(s)})" aria-label="Remove student ${s.name}" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);padding:4px">×</button></div>`).join('')}</div>`).join('');
+}
+function renderLecAnalytics(){
+  const el=document.getElementById('lc2');if(!el)return;
+  if(!students.length){el.innerHTML='<div class="alert al-a" style="margin-top:4px"><span>ℹ️</span><div>Add student records in the Students tab to see analytics.</div></div>';return;}
+  const total=students.length;
+  const b4=students.filter(s=>parseFloat(s.band||0)>=4).length;
+  const b3=students.filter(s=>parseFloat(s.band||0)>=3&&parseFloat(s.band||0)<4).length;
+  const b2=students.filter(s=>s.band&&parseFloat(s.band)<3).length;
+  const weakCount={};students.forEach(s=>{if(s.weak)weakCount[s.weak]=(weakCount[s.weak]||0)+1;});
+  const topWeak=Object.entries(weakCount).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  el.innerHTML=`<div style="margin-top:4px"></div>
+  <div class="stat-grid"><div class="stat-box"><div class="st-num" style="color:var(--P)">${total}</div><div class="st-lbl">Students</div></div><div class="stat-box"><div class="st-num" style="color:var(--G)">${b4}</div><div class="st-lbl">Band 4+</div></div><div class="stat-box"><div class="st-num" style="color:var(--R)">${b2}</div><div class="st-lbl">Below 3</div></div></div>
+  <div class="sh">Band Distribution</div>
+  <div class="card">${[['Band 4+',b4,'var(--G)'],['Band 3–3.5',b3,'var(--AD)'],['Below Band 3',b2,'var(--R)']].map(([lbl,cnt,col])=>total&&cnt>0?`<div class="sb"><div class="sb-top"><span class="sb-l">${lbl}</span><span class="sb-v">${cnt} (${Math.round(cnt/total*100)}%)</span></div><div class="sb-track"><div class="sb-fill" style="width:${cnt/total*100}%;background:${col}"></div></div></div>`:'').join('')}</div>
+  ${topWeak.length?`<div class="sh">Top Weaknesses in Class</div><div class="card">${topWeak.map(([w,c])=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)"><div style="width:7px;height:7px;border-radius:50%;background:var(--R);flex-shrink:0"></div><div style="flex:1;font-size:13px;font-weight:700;color:var(--ink)">${w}</div><div style="font-size:12px;font-weight:800;color:var(--muted)">${c} students</div></div>`).join('')}</div>`:''}
+  <button class="btn btn-p" onclick="lecTab(3)">View Teaching Strategies →</button>`;
+}
+function addStudent(){
+  const n=document.getElementById('l-nm').value.trim();
+  if(!n){showToast('Please enter student name.','warn');return;}
+  students.push({name:n,no:document.getElementById('l-no').value.trim(),group:document.getElementById('l-grp').value.trim(),band:document.getElementById('l-band').value,weak:document.getElementById('l-weak').value});
+  localStorage.setItem('msp_students',JSON.stringify(students));
+  ['l-nm','l-no'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  renderLecStudents();
+  showToast('Student added successfully.','success',1800);
+}
+function removeStudent(i){
+  const name=students[i]?.name||'Student';
+  students.splice(i,1);
+  localStorage.setItem('msp_students',JSON.stringify(students));
+  renderLecStudents();
+  showToast(name+' removed.','info',1800);
+}
+function clearStudents(){
+  showModal({icon:'🗑️',title:'Clear All Students',msg:'This will remove all student records. This cannot be undone.',confirmLabel:'Yes, Clear',confirmClass:'btn-out',cancelLabel:'Cancel',onConfirm:()=>{
+    students=[];
+    localStorage.removeItem('msp_students');
+    renderLecStudents();
+    showToast('All student records cleared.','info');
+  }});
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TOAST & MODAL UTILITIES (replaces alert/confirm)
+// ═══════════════════════════════════════════════════════════════
+function showToast(msg, type='info', duration=2800){
+  const c=document.getElementById('toast-container');
+  const icons={success:'✅',warn:'⚠️',error:'❌',info:'💬'};
+  const t=document.createElement('div');
+  t.className=`toast toast-${type}`;
+  t.innerHTML=`<span>${icons[type]||'💬'}</span><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(()=>{t.classList.add('leaving');setTimeout(()=>t.remove(),250);},duration);
+}
+
+function showModal({icon='❓',title='',msg='',confirmLabel='OK',confirmClass='btn-p',cancelLabel=null,onConfirm=()=>{},onCancel=()=>{}}={}){
+  const overlay=document.getElementById('modal-overlay');
+  document.getElementById('modal-icon').textContent=icon;
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-msg').textContent=msg;
+  const actions=document.getElementById('modal-actions');
+  actions.innerHTML='';
+  if(cancelLabel){
+    const cb=document.createElement('button');
+    cb.className='btn btn-out';cb.style.marginTop='0';
+    cb.textContent=cancelLabel;
+    cb.onclick=()=>{overlay.classList.add('hidden');onCancel();};
+    actions.appendChild(cb);
+  }
+  const confBtn=document.createElement('button');
+  confBtn.className=`btn ${confirmClass}`;confBtn.style.marginTop='0';
+  confBtn.textContent=confirmLabel;
+  confBtn.onclick=()=>{overlay.classList.add('hidden');onConfirm();};
+  actions.appendChild(confBtn);
+  overlay.classList.remove('hidden');
+  // Close on backdrop tap
+  overlay.onclick=(e)=>{if(e.target===overlay){overlay.classList.add('hidden');onCancel();}};
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BOOT
+// ═══════════════════════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
